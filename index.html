@@ -163,35 +163,6 @@ a:focus-visible,button:focus-visible,.cf:focus-visible{outline:2px solid var(--b
 .tx{font-family:var(--body);font-size:5.5px;letter-spacing:.12em;fill:#566077}
 .tv{font-family:var(--body);font-size:8px;font-weight:600;fill:#9db8ff}
 
-/* Index/ETF DCA Signal: 한 번 그려지고 유지되는 가격선 + 순차 등장 마커 */
-.ix-area{opacity:0;animation:ixfade .8s 1.8s forwards}
-.ix-line{fill:none;stroke:var(--blue);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1;stroke-dashoffset:1;animation:ixdraw 2.2s cubic-bezier(.4,0,.2,1) forwards}
-@keyframes ixdraw{to{stroke-dashoffset:0}}
-@keyframes ixfade{to{opacity:1}}
-.ix-mk{transform-box:fill-box;transform-origin:center;transform:scale(0);opacity:0;animation:ixpop .45s cubic-bezier(.3,1.6,.5,1) forwards;animation-delay:calc(2s + var(--i)*.35s)}
-@keyframes ixpop{to{transform:scale(1);opacity:1}}
-.ix-avg{fill:none;stroke:#9db8ff;stroke-width:1.2;stroke-dasharray:3 3;opacity:0;animation:ixfade .8s 3.2s forwards}
-
-/* Wireless charger: 플러그가 꽂히고, 충격 링과 플래시, 배터리 충전 */
-.cp-plug{transform:translateY(-60px);opacity:0;animation:cpPlug 3.6s infinite}
-@keyframes cpPlug{
- 0%{transform:translateY(-60px);opacity:0}
- 6%{transform:translateY(-60px);opacity:1;animation-timing-function:cubic-bezier(.55,0,1,.45)}
- 24%{transform:translateY(12px);opacity:1}
- 62%{transform:translateY(12px);opacity:1;animation-timing-function:cubic-bezier(.4,0,.8,.6)}
- 80%{transform:translateY(-60px);opacity:1}
- 84%,100%{transform:translateY(-60px);opacity:0}}
-.cp-dev{transform-box:fill-box;transform-origin:50% 0;animation:cpSquash 3.6s infinite}
-@keyframes cpSquash{0%,24%{transform:scaleY(1)}26%{transform:scaleY(.93)}31%{transform:scaleY(1.02)}35%,100%{transform:scaleY(1)}}
-.cp-ring{fill:none;stroke:#2f7bff;stroke-width:1.5;transform-box:fill-box;transform-origin:center;opacity:0;animation:cpRing 3.6s infinite}
-@keyframes cpRing{0%,23%{transform:scale(.2);opacity:0}25%{transform:scale(.5);opacity:1}40%{transform:scale(2.4);opacity:0}100%{transform:scale(2.4);opacity:0}}
-.cp-flash{opacity:0;animation:cpFlash 3.6s infinite}
-@keyframes cpFlash{0%,24%{opacity:0}26%{opacity:.35}38%,100%{opacity:0}}
-.cp-bat{transform-box:fill-box;transform-origin:0 50%;transform:scaleX(0);animation:cpBat 3.6s infinite}
-@keyframes cpBat{0%,36%{transform:scaleX(0)}62%{transform:scaleX(1)}90%{transform:scaleX(1)}96%,100%{transform:scaleX(0)}}
-.cp-padglow{opacity:0;animation:cpPad 3.6s infinite}
-@keyframes cpPad{0%,30%{opacity:0}40%,70%{opacity:.6}85%,100%{opacity:0}}
-
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}html{scroll-behavior:auto}}
 </style>
 </head>
@@ -630,35 +601,110 @@ const VZ=[
   <path class="ln" pathLength="1" style="animation-duration:2.4s" d="M100 80H116l3-3 3 3H128l3-14 4 26 3-12H146l3-5 3 5H168l3-14 4 26 3-12H192"/>
  </svg>`,
 
- /* 1 Index & ETF DCA Signal: 가격선이 한 번 그려지고 유지, 매수 마커는 순차 등장 */
+ /* 1 Index & ETF DCA Signal: 출렁이는 가격선 + 저점마다 적립 매수 + 평균단가선 */
  `<svg class="vz" viewBox="0 0 200 100" preserveAspectRatio="xMidYMid meet">
-  <defs><linearGradient id="ixg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2f7bff" stop-opacity=".22"/><stop offset="1" stop-color="#2f7bff" stop-opacity="0"/></linearGradient></defs>
-  ${GR}
-  <text class="tx" x="6" y="10">PRICE</text><text class="tx" x="194" y="10" text-anchor="end">AVG COST</text>
-  <path class="ix-area" d="M0 62 C15 58 25 48 40 54 S60 74 80 66 S100 50 120 56 S140 80 160 62 S185 30 200 36 V100 H0Z" fill="url(#ixg)"/>
-  <path class="ix-avg" d="M40 60H200"/>
-  <path class="ix-line" pathLength="1" d="M0 62 C15 58 25 48 40 54 S60 74 80 66 S100 50 120 56 S140 80 160 62 S185 30 200 36"/>
-  <circle r="6" fill="#2f7bff" opacity=".25"><animateMotion dur="5s" begin="2.2s" repeatCount="indefinite" path="M0 62 C15 58 25 48 40 54 S60 74 80 66 S100 50 120 56 S140 80 160 62 S185 30 200 36"/></circle>
-  <circle r="2.5" fill="#9db8ff"><animateMotion dur="5s" begin="2.2s" repeatCount="indefinite" path="M0 62 C15 58 25 48 40 54 S60 74 80 66 S100 50 120 56 S140 80 160 62 S185 30 200 36"/></circle>
-  ${[[40,54],[80,66],[120,56]].map((p,i)=>`<g class="ix-mk" style="--i:${i}"><circle cx="${p[0]}" cy="${p[1]}" r="3.5" fill="#2f7bff" stroke="#000" stroke-width="1.5"/><text class="tv" x="${p[0]}" y="${p[1]+14}" text-anchor="middle" style="font-size:6px">BUY</text></g>`).join('')}
+  <style>
+   .ixn-line{fill:none;stroke:#2f7bff;stroke-width:2;stroke-linejoin:round;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:1;animation:ixnDraw 8s linear infinite}
+   @keyframes ixnDraw{0%{stroke-dashoffset:1;opacity:1}40%{stroke-dashoffset:0;opacity:1}90%{stroke-dashoffset:0;opacity:1}96%,100%{stroke-dashoffset:0;opacity:0}}
+   .ixn-area{opacity:0;animation:ixnFade 8s linear infinite}
+   @keyframes ixnFade{0%{opacity:0}40%{opacity:1}90%{opacity:1}96%,100%{opacity:0}}
+   .ixn-mk{opacity:0;transform-box:fill-box;transform-origin:center;animation:ixnPop 8s infinite}
+   @keyframes ixnPop{0%{opacity:0;transform:scale(0)}4%{opacity:1;transform:scale(1.4)}7%{transform:scale(1)}90%{opacity:1;transform:scale(1)}96%,100%{opacity:0;transform:scale(.6)}}
+   .ixn-avg{opacity:0;animation:ixnAvg 8s infinite}
+   @keyframes ixnAvg{0%{opacity:0}4%,90%{opacity:.9}96%,100%{opacity:0}}
+   .ixn-tx{font-family:var(--body);font-size:5.5px;letter-spacing:.12em;fill:#566077}
+   .ixn-buy{font-family:var(--body);font-size:5.5px;font-weight:600;fill:#9db8ff;text-anchor:middle}
+  </style>
+  <defs>
+   <linearGradient id="ixng" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#2f7bff" stop-opacity=".25"/>
+    <stop offset="1" stop-color="#2f7bff" stop-opacity="0"/>
+   </linearGradient>
+  </defs>
+  <path d="M0 25H200M0 50H200M0 75H200" stroke="#121a2b" stroke-width="1" fill="none"/>
+  <path class="ixn-area" d="M0 62L12 50L22 60L34 40L46 54L58 68L70 56L82 76L94 64L106 84L118 66L130 46L142 60L154 38L166 52L178 32L190 44L200 26V100H0Z" fill="url(#ixng)"/>
+  <path class="ixn-avg" style="animation-delay:2.4s" d="M58 70H200" fill="none" stroke="#9db8ff" stroke-width="1.2" stroke-dasharray="3 3"/>
+  <text class="ixn-tx ixn-avg" style="animation-delay:2.4s" x="198" y="66" text-anchor="end">AVG COST</text>
+  <text class="ixn-tx" x="6" y="10">PRICE</text>
+  <path id="ixnp" class="ixn-line" pathLength="1" d="M0 62L12 50L22 60L34 40L46 54L58 68L70 56L82 76L94 64L106 84L118 66L130 46L142 60L154 38L166 52L178 32L190 44L200 26"/>
+  <g class="ixn-mk" style="animation-delay:.93s"><circle cx="58" cy="68" r="3.2" fill="#2f7bff" stroke="#000" stroke-width="1.2"/><text class="ixn-buy" x="58" y="82">BUY</text></g>
+  <g class="ixn-mk" style="animation-delay:1.31s"><circle cx="82" cy="76" r="3.2" fill="#2f7bff" stroke="#000" stroke-width="1.2"/><text class="ixn-buy" x="82" y="90">BUY</text></g>
+  <g class="ixn-mk" style="animation-delay:1.70s"><circle cx="106" cy="84" r="3.2" fill="#2f7bff" stroke="#000" stroke-width="1.2"/><text class="ixn-buy" x="106" y="97">BUY</text></g>
+  <g class="ixn-mk" style="animation-delay:2.27s"><circle cx="142" cy="60" r="3.2" fill="#2f7bff" stroke="#000" stroke-width="1.2"/><text class="ixn-buy" x="142" y="51">BUY</text></g>
+  <circle r="2.4" fill="#9db8ff">
+   <animateMotion dur="8s" repeatCount="indefinite" keyPoints="0;1;1" keyTimes="0;0.4;1" calcMode="linear"><mpath href="#ixnp"/></animateMotion>
+   <animate attributeName="opacity" dur="8s" repeatCount="indefinite" values="0;1;1;0;0" keyTimes="0;.02;.9;.96;1"/>
+  </circle>
  </svg>`,
 
- /* 2 Wireless Charging Pad: 플러그가 꽂히고 충격 후 배터리 충전 */
+ /* 2 Wireless Charging Pad: 기기가 미끄러져 정렬 → 충전 → 들려서 이동 → 반복 */
  `<svg class="vz" viewBox="0 0 200 100" preserveAspectRatio="xMidYMid meet">
-  <rect x="50" y="86" width="100" height="8" rx="4" fill="#0d1a33" stroke="#2f7bff" stroke-width="1.5"/>
-  <rect class="cp-padglow" x="50" y="86" width="100" height="8" rx="4" fill="#2f7bff"/>
-  <g class="cp-plug">
-   <rect x="92" y="2" width="16" height="12" rx="3" fill="#1b3a73" stroke="#9db8ff" stroke-width="1.2"/>
-   <rect x="95" y="14" width="10" height="10" rx="2" fill="#9db8ff"/>
+  <style>
+   .cwn-tx{font-family:var(--body);font-size:5.5px;letter-spacing:.12em;fill:#566077;text-anchor:middle}
+   .cwn-lbl{font-family:var(--body);font-size:6px;font-weight:600;letter-spacing:.2em;fill:#9db8ff;text-anchor:middle;opacity:0}
+   .cwn-l1{animation:cwnL1 9s infinite}
+   .cwn-l2{animation:cwnL2 9s infinite}
+   @keyframes cwnL1{0%,14%{opacity:0}20%,40%{opacity:1}46%,100%{opacity:0}}
+   @keyframes cwnL2{0%,50%{opacity:0}54%,80%{opacity:1}86%,100%{opacity:0}}
+   .cwn-phone{transform-box:fill-box;transform-origin:center;animation:cwnMove 9s ease-in-out infinite}
+   @keyframes cwnMove{0%{transform:translate(-64px,-2px) rotate(-16deg);opacity:0}5%{opacity:1}16%{transform:translate(-58px,-2px) rotate(-16deg);opacity:1}30%{transform:translate(-8px,0) rotate(6deg)}38%{transform:translate(5px,-2px) rotate(-3deg)}46%,80%{transform:translate(0,0) rotate(0deg);opacity:1}88%{transform:translate(34px,-30px) rotate(20deg);opacity:1}95%,100%{transform:translate(64px,-40px) rotate(28deg);opacity:0}}
+   .cwn-bat{transform-box:fill-box;transform-origin:0 50%;animation:cwnBat 9s infinite}
+   @keyframes cwnBat{0%,48%{transform:scaleX(.15)}60%{transform:scaleX(.45)}74%{transform:scaleX(.8)}82%,100%{transform:scaleX(1)}}
+   .cwn-glow{opacity:0;animation:cwnGlow 9s infinite}
+   @keyframes cwnGlow{0%,46%{opacity:0}52%,82%{opacity:.7}88%,100%{opacity:0}}
+   .cwn-charge{opacity:0;animation:cwnOn 9s infinite}
+   @keyframes cwnOn{0%,50%{opacity:0}52%,82%{opacity:1}88%,100%{opacity:0}}
+   .cwn-ring{fill:none;stroke:#2f7bff;stroke-width:1;transform-box:fill-box;transform-origin:center;animation:cwnRing 1.6s linear infinite}
+   @keyframes cwnRing{0%{transform:scale(.4);opacity:.9}100%{transform:scale(2.4);opacity:0}}
+   .cwn-flow{fill:none;stroke:#2f7bff;stroke-width:1.4;stroke-dasharray:3 5;animation:cwnFlow .8s linear infinite}
+   @keyframes cwnFlow{to{stroke-dashoffset:-16}}
+   .cwn-outled{animation:cwnOutLed 2s infinite}
+   @keyframes cwnOutLed{0%,100%{opacity:.3}50%{opacity:1}}
+  </style>
+
+  <text class="cwn-tx" x="179" y="16">AC 220V</text>
+  <path d="M179 56C179 72 170 80 160 84" fill="none" stroke="#566077" stroke-width="1.4"/>
+  <g class="cwn-charge"><path class="cwn-flow" d="M179 56C179 72 170 80 160 84"/></g>
+
+  <rect x="166" y="22" width="26" height="34" rx="6" fill="#080c14" stroke="#566077" stroke-width="1.2"/>
+  <rect x="172" y="32" width="3" height="9" rx="1" fill="#566077"/>
+  <rect x="183" y="32" width="3" height="9" rx="1" fill="#566077"/>
+  <circle class="cwn-outled" cx="179" cy="48" r="1.6" fill="#2f7bff"/>
+
+  <rect x="40" y="82" width="120" height="8" rx="4" fill="#0d1a33" stroke="#2f7bff" stroke-width="1.2"/>
+  <rect class="cwn-glow" x="40" y="82" width="120" height="8" rx="4" fill="#2f7bff"/>
+  <circle class="cwn-glow" cx="150" cy="86" r="1.6" fill="#9db8ff"/>
+
+  <g class="cwn-charge">
+   <circle class="cwn-ring" cx="100" cy="84" r="6"/>
+   <circle class="cwn-ring" cx="100" cy="84" r="6" style="animation-delay:.8s"/>
   </g>
-  <g class="cp-dev">
-   <rect x="70" y="36" width="60" height="48" rx="10" fill="#080c14" stroke="#9db8ff" stroke-width="1.5"/>
-   <rect x="96" y="37" width="8" height="3" rx="1.5" fill="#2a3550"/>
-   <rect x="80" y="58" width="40" height="8" rx="3" fill="none" stroke="#2a3550" stroke-width="1"/>
-   <rect class="cp-bat" x="81.5" y="59.5" width="37" height="5" rx="2" fill="#2f7bff"/>
+
+  <text class="cwn-lbl cwn-l1" x="100" y="14">ALIGNING</text>
+  <text class="cwn-lbl cwn-l2" x="100" y="14">CHARGING</text>
+
+  <g class="cwn-phone"><g transform="translate(100 50)">
+   <rect x="-18" y="-28" width="36" height="56" rx="7" fill="#080c14" stroke="#9db8ff" stroke-width="1.5"/>
+   <rect x="-14" y="-22" width="28" height="44" rx="3" fill="#0d1a33"/>
+   <circle cx="0" cy="-16" r="1.2" fill="#2a3550"/>
+   <rect x="-10" y="-3" width="20" height="6" rx="2" fill="none" stroke="#2a3550" stroke-width="1"/>
+   <rect class="cwn-bat" x="-9" y="-2" width="18" height="4" rx="1.5" fill="#2f7bff"/>
+  </g></g>
+
+  <g class="cwn-charge">
+   <circle r="1.4" fill="#9db8ff">
+    <animateMotion dur="1.2s" repeatCount="indefinite" path="M100 84V56"/>
+    <animate attributeName="opacity" values="0;1;1;0" dur="1.2s" repeatCount="indefinite"/>
+   </circle>
+   <circle r="1.4" fill="#9db8ff">
+    <animateMotion dur="1.2s" begin="-0.6s" repeatCount="indefinite" path="M94 84V56"/>
+    <animate attributeName="opacity" values="0;1;1;0" dur="1.2s" begin="-0.6s" repeatCount="indefinite"/>
+   </circle>
+   <circle r="1.4" fill="#9db8ff">
+    <animateMotion dur="1.2s" begin="-0.3s" repeatCount="indefinite" path="M106 84V56"/>
+    <animate attributeName="opacity" values="0;1;1;0" dur="1.2s" begin="-0.3s" repeatCount="indefinite"/>
+   </circle>
   </g>
-  <rect class="cp-flash" x="70" y="36" width="60" height="48" rx="10" fill="#2f7bff"/>
-  <circle class="cp-ring" cx="100" cy="36" r="8"/>
  </svg>`,
 
  /* 3 Swarm drone: canvas animation (filled in by drone()) */
