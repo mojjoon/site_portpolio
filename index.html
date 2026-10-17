@@ -34,7 +34,7 @@ nav .logo i{display:inline-block;width:8px;height:8px;background:var(--blue);bor
 nav ul{display:flex;gap:22px;list-style:none;align-items:center}
 nav a.l{display:inline-block;color:var(--mute);text-decoration:none;font-size:.95rem;transition:color .2s}
 nav a.l:hover{color:var(--blue)}nav a.l.on{color:var(--ink)}
-nav .k{display:inline-block;color:var(--mute);text-decoration:none;font:inherit;font-size:.82rem;background:none;border:1px solid var(--line);border-radius:99px;padding:2px 12px}
+nav .k{display:inline-block;color:var(--mute);text-decoration:none;font:inherit;font-size:.82rem;background:none;border:1px solid var(--line);border-radius:99px;padding:2px 12px;cursor:pointer}
 nav .k:hover{color:var(--blue);border-color:var(--blue)}
 #hero{position:relative;min-height:100svh;display:flex;flex-direction:column;justify-content:center;padding:120px clamp(20px,5vw,56px) 60px}
 #net{position:absolute;inset:0;width:100%;height:100%}
@@ -82,7 +82,7 @@ h2{font-family:var(--display);font-size:.82rem;letter-spacing:.28em;text-transfo
 .acc{max-width:820px;margin:44px auto 0;text-align:left;border-top:1px solid var(--line)}
 .ac{position:relative;border-bottom:1px solid var(--line);opacity:0;transform:translateY(18px);transition:opacity .6s,transform .6s cubic-bezier(.2,.8,.2,1)}.ac.vis{opacity:1;transform:none}
 .ac::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:1px;background:var(--blue);transform:scaleX(0);transform-origin:0 50%;transition:transform .5s cubic-bezier(.2,.8,.2,1)}.ac.open::after{transform:scaleX(1)}
-.ah{width:100%;display:flex;align-items:center;gap:18px;padding:22px 4px;background:none;border:0;color:var(--ink);font:inherit;text-align:left}
+.ah{width:100%;display:flex;align-items:center;gap:18px;padding:22px 4px;background:none;border:0;color:var(--ink);font:inherit;text-align:left;cursor:pointer}
 .ah .no{color:var(--blue);font-size:.78rem;letter-spacing:.12em;width:26px;flex:none}
 .ah .nm{font-family:var(--display);font-size:clamp(1.05rem,2.2vw,1.4rem);font-weight:600;letter-spacing:-.02em;flex:none;transition:color .3s,transform .3s}.ah:hover .nm{color:#fff;transform:translateX(4px)}
 .ah .nm small{margin-left:10px;color:#9db8ff;font-size:.75rem;font-weight:400;letter-spacing:0}
@@ -109,7 +109,7 @@ h2{font-family:var(--display);font-size:.82rem;letter-spacing:.28em;text-transfo
 .pn h3{font-family:var(--display);font-size:1.6rem;font-weight:600;letter-spacing:-.02em}.pn p{color:var(--mute);margin:10px 0 20px;font-weight:300}.pn .more{margin-top:20px}
 @keyframes fo2{from{opacity:0;transform:translateY(8px)}}
 @media(max-width:800px){.sp{grid-template-columns:1fr}}
-.arr{width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:none;color:var(--ink);font-size:1.1rem;transition:all .2s}
+.arr{width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:none;color:var(--ink);font-size:1.1rem;transition:all .2s;cursor:pointer}
 .arr:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-soft)}
 .cf{position:relative;height:clamp(330px,42vw,450px);margin:28px calc(-1*clamp(20px,5vw,56px)) 0;perspective:1300px;overflow:hidden;touch-action:pan-y;user-select:none;-webkit-user-select:none;outline:none;
 -webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
@@ -124,7 +124,7 @@ h2{font-family:var(--display);font-size:.82rem;letter-spacing:.28em;text-transfo
 .ph span{font-size:.95rem;font-weight:600;line-height:1.3;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
 .cf-ctl{display:flex;justify-content:center;align-items:center;gap:18px;margin-top:8px;color:var(--mute);font-size:.9rem}
 .dots{display:flex;justify-content:center;flex-wrap:wrap;gap:4px;margin-top:6px}
-.dots button{width:22px;height:22px;background:none;border:0;display:grid;place-items:center}
+.dots button{width:22px;height:22px;background:none;border:0;display:grid;place-items:center;cursor:pointer}
 .dots button::before{content:"";width:6px;height:6px;border-radius:99px;background:#2a3550;transition:all .3s}
 .dots button.on::before{width:20px;background:var(--blue)}
 .cf-cap{max-width:36rem;min-height:8rem;margin:6px auto 0;text-align:center}
@@ -143,7 +143,7 @@ a:focus-visible,button:focus-visible,.cf:focus-visible{outline:2px solid var(--b
 .ov.open{opacity:1;pointer-events:auto}
 .box{position:relative;text-align:left;width:min(520px,calc(100% - 40px));background:var(--card);border:1px solid var(--line);border-radius:18px;padding:30px;transform:scale(.94) translateY(10px);transition:transform .3s}
 .ov.open .box{transform:none}
-.box .x{position:absolute;top:14px;right:14px;width:34px;height:34px;border-radius:50%;background:none;border:1px solid var(--line);color:var(--ink);font-size:1.1rem}
+.box .x{position:absolute;top:14px;right:14px;width:34px;height:34px;border-radius:50%;background:none;border:1px solid var(--line);color:var(--ink);font-size:1.1rem;cursor:pointer}
 .box .ico{font-size:1.8rem;margin-bottom:14px}
 .box h3{font-family:var(--display);font-size:1.6rem;font-weight:600;letter-spacing:-.02em;line-height:1.25}
 .box p{color:var(--mute);margin-top:12px;font-weight:300}
@@ -151,7 +151,7 @@ a:focus-visible,button:focus-visible,.cf:focus-visible{outline:2px solid var(--b
 .box.p{padding:0;overflow:hidden;align-self:start;margin-top:16vh}
 .box.p input{width:100%;background:none;border:0;border-bottom:1px solid var(--line);padding:18px 22px;color:var(--ink);font:inherit;outline:none}
 .box.p ul{list-style:none;padding:8px;max-height:50vh;overflow:auto}
-.box.p li{display:flex;justify-content:space-between;gap:12px;padding:10px 14px;border-radius:10px;color:var(--mute);font-size:.95rem}
+.box.p li{display:flex;justify-content:space-between;gap:12px;padding:10px 14px;border-radius:10px;color:var(--mute);font-size:.95rem;cursor:pointer}
 .box.p li.on{background:var(--blue-soft);color:var(--ink)}
 .box.p small{color:#566077;flex:none}
 @media(max-width:600px){nav ul{gap:12px}.now{display:none}}
@@ -205,58 +205,79 @@ a:focus-visible,button:focus-visible,.cf:focus-visible{outline:2px solid var(--b
 <nav>
   <a class="logo" href="#hero">MO JUNHYUN<i></i></a>
   <ul>
-    <li><a class="l" href="#projects">Projects</a></li>
-    <li><a class="l" href="#skills">Skills</a></li>
-    <li><a class="l" href="#blog">Blog</a></li>
-    <li><button class="k" id="kb"><span>Search</span> ⌘K</button></li>
+    <li><a class="l" href="#projects" data-t="navProjects"></a></li>
+    <li><a class="l" href="#skills" data-t="navSkills"></a></li>
+    <li><a class="l" href="#blog" data-t="navBlog"></a></li>
+    <li><button class="k" id="kb"><span data-t="searchBtn"></span> ⌘K</button></li>
+    <li><button class="k" id="lg" aria-label="Language">한국어</button></li>
   </ul>
 </nav>
 <header id="hero">
   <canvas id="net"></canvas>
   <div class="hero-in">
     <h1 id="title" aria-label="MO JUNHYUN"></h1>
-    <p class="sub">Electrical engineering. Software &amp; tools. Hardware. Notes on the fundamentals.</p>
+    <p class="sub" data-t="heroSub"></p>
   </div>
-  <p class="hint">Move your mouse, or click anywhere</p>
+  <p class="hint" data-t="hint"></p>
   <p class="now" id="now"></p>
 </header>
 
 <section class="s" id="projects">
-  <h2>Projects</h2>
-  <p class="lead">Things I built and actually use. Hover a name.</p>
+  <h2 data-t="projTitle"></h2>
+  <p class="lead" data-t="projLead"></p>
   <div class="sp"><ul id="l2"></ul><div class="pn" id="p2"></div></div>
 </section>
 
 <section class="s" id="skills">
-  <h2>Skills</h2>
-  <p class="lead">Languages, hardware, and the semiconductor fundamentals behind them.</p>
+  <h2 data-t="skillTitle"></h2>
+  <p class="lead" data-t="skillLead"></p>
   <div class="acc" id="skgrid"></div>
 </section>
 
 <section class="s" id="blog">
-  <h2>Blog</h2>
-  <p class="lead">Drag, scroll, or use the arrow keys. Filter by topic.</p>
+  <h2 data-t="blogTitle"></h2>
+  <p class="lead" data-t="blogLead"></p>
   <div id="bchips"></div>
   <div class="cf" id="cf" tabindex="0" aria-label="Blog posts"><div class="cf-track" id="bgrid"></div></div>
   <div class="cf-ctl"><button class="arr" id="prev" aria-label="Previous post">‹</button><span id="cnt"></span><button class="arr" id="next" aria-label="Next post">›</button></div>
   <div class="dots" id="dots"></div>
   <div class="cf-cap" id="cap" aria-live="polite"></div>
-  <div class="more-wrap"><a class="more" href="https://mo-bi.tistory.com/" target="_blank" rel="noopener">View all posts</a></div>
+  <div class="more-wrap"><a class="more" href="https://mo-bi.tistory.com/" target="_blank" rel="noopener" data-t="viewAll"></a></div>
 </section>
 
 <footer><span>© 2026 MO JUNHYUN</span><a href="https://mo-bi.tistory.com/" target="_blank" rel="noopener">mo-bi.tistory.com</a></footer>
 
-<div class="ov" id="pal"><div class="box p"><input placeholder="Search projects and posts" aria-label="Search"><ul></ul></div></div>
+<div class="ov" id="pal"><div class="box p"><input aria-label="Search"><ul></ul></div></div>
 <div class="ov" id="dp"><div class="box"></div></div>
 <script>
 /* ---------- KR / EN ---------- */
-const lang='en';
-const T={all:['All','전체'],latest:['Latest note','최신 글'],search:['Search projects and posts','프로젝트와 글 검색'],go:['Go to ','이동: '],none:['No results','결과 없음'],section:['section','섹션'],project:['project','프로젝트'],post:['post','글'],open:['Open project','프로젝트 열기'],Open:['Open','열기'],Drag:['Drag','드래그']};
+let lang='en';
+const T={
+  all:['All','전체'], major:['Major','전공'], others:['Others','기타'],
+  latest:['Latest note','최신 글'], search:['Search projects and posts','프로젝트와 글 검색'],
+  searchBtn:['Search','검색'],
+  go:['Go to ','이동: '], none:['No results','결과 없음'],
+  section:['section','섹션'], project:['project','프로젝트'], post:['post','글'],
+  open:['Open project','프로젝트 열기'], Open:['Open','열기'], Drag:['Drag','드래그'],
+  navProjects:['Projects','프로젝트'], navSkills:['Skills','스킬'], navBlog:['Blog','블로그'],
+  heroSub:['Electrical engineering. Software & tools. Hardware. Notes on the fundamentals.','전기전자공학. 소프트웨어와 툴. 하드웨어. 기본기에 대한 기록.'],
+  hint:['Move your mouse, or click anywhere','마우스를 움직이거나 아무 곳이나 클릭하세요'],
+  projTitle:['Projects','프로젝트'], projLead:['Things I built and actually use. Hover a name.','직접 만들고 실제로 쓰는 것들. 이름에 마우스를 올려보세요.'],
+  skillTitle:['Skills','스킬'], skillLead:['Languages, hardware, and the semiconductor fundamentals behind them.','언어, 하드웨어, 그리고 그 바탕이 되는 반도체 기본기.'],
+  blogTitle:['Blog','블로그'], blogLead:['Drag, scroll, or use the arrow keys. Filter by topic.','드래그, 스크롤, 또는 방향키로 넘기세요. 주제별로 필터링할 수 있어요.'],
+  viewAll:['View all posts','전체 글 보기'],
+  browse:['Browse','둘러보기'], catHint:['Open this category on the blog.','이 카테고리를 블로그에서 열기'],
+  seoul:['Seoul','서울']
+};
 const t=k=>T[k][lang==='ko'?1:0];
-function applyLang(){
+const pt=p=>(lang==='ko'&&p.kt)||p.t;
+const pd=p=>(lang==='ko'&&p.kd)||p.d;
+
+function applyStatic(){
   document.documentElement.lang=lang;
-    pal.querySelector('input').placeholder=t('search');
-  if(window.renderPosts)renderPosts();
+  document.querySelectorAll('[data-t]').forEach(el=>{el.textContent=t(el.dataset.t);});
+  pal.querySelector('input').placeholder=t('search');
+  document.getElementById('lg').textContent=lang==='ko'?'English':'한국어';
 }
 
 /* ---------- 블로그 글 데이터 (직접 수정 가능) ---------- */
@@ -294,11 +315,11 @@ const vis=()=>{
   if(sub)l=l.filter(p=>p.c===sub);
   if(l.length||tp==='all')return l;
   const g=grp&&TREE[tp].find(x=>x[0]===grp),path=sub?grp+'/'+sub:grp||(tp==='major'?'\u25A0 MAJOR':'\u25A0 OTHERS');
-  return [{id:'category/'+path.split('/').map(encodeURIComponent).join('/'),ph:'\u2192',t:'Browse '+(sub||(g?g[1]:tp==='major'?'Major':'Others')),d:'',g:grp||'',c:sub||(g?g[1]:tp),x:'Open this category on the blog.'}];
+  return [{id:'category/'+path.split('/').map(encodeURIComponent).join('/'),ph:'\u2192',t:t('browse')+' '+(sub||(g?g[1]:tp==='major'?t('major'):t('others'))),d:'',g:grp||'',c:sub||(g?g[1]:tp),x:t('catHint')}];
 };
 function renderChips(){
   const c=(l,v,tx)=>`<button class="chip" data-l="${l}" data-v="${v}">${tx}</button>`;
-  if(!bchips.firstChild)bchips.innerHTML=`<svg class="tree"></svg><div class="rw" id="r1">${c(1,'all',t('all'))}${c(1,'major','Major')}${c(1,'others','Others')}</div><div class="rw" id="r2"></div><div class="rw" id="r3"></div>`;
+  if(!bchips.firstChild)bchips.innerHTML=`<svg class="tree"></svg><div class="rw" id="r1">${c(1,'all',t('all'))}${c(1,'major',t('major'))}${c(1,'others',t('others'))}</div><div class="rw" id="r2"></div><div class="rw" id="r3"></div>`;
   const r2=document.getElementById('r2'),r3=document.getElementById('r3'),g=grp&&tp!=='all'&&TREE[tp].find(x=>x[0]===grp),k3=g&&g[2].length>1?grp:'';
   if(r2.dataset.k!==tp){r2.dataset.k=tp;r2.innerHTML=tp==='all'?'':TREE[tp].map(x=>c(2,x[0],x[1])).join('');}
   if(r3.dataset.k!==k3){r3.dataset.k=k3;r3.innerHTML=k3?g[2].map(x=>c(3,x,x)).join(''):'';}
@@ -326,7 +347,7 @@ bchips.addEventListener('click',e=>{const b=e.target.closest('.chip');if(!b)retu
   setTimeout(()=>{renderPosts(true);tr.classList.remove('out');},still?0:240);});
 dots.addEventListener('click',e=>{const b=e.target.closest('button');if(b&&window.cfTo)cfTo(+b.dataset.i);});
 const seoul=()=>new Date().toLocaleTimeString('en-GB',{timeZone:'Asia/Seoul',hour:'2-digit',minute:'2-digit'});
-function updNow(){const p=posts[0];document.getElementById('now').innerHTML=`${p?`${t('latest')}: <a href="https://mo-bi.tistory.com/${p.id}" target="_blank" rel="noopener">${p.t}</a><br>`:''}Seoul ${seoul()}`;}
+function updNow(){const p=posts[0];document.getElementById('now').innerHTML=`${p?`${t('latest')}: <a href="https://mo-bi.tistory.com/${p.id}" target="_blank" rel="noopener">${p.t}</a><br>`:''}${t('seoul')} ${seoul()}`;}
 setInterval(updNow,30000);
 function renderPosts(reset){
   if(!reset)renderChips();
@@ -511,28 +532,28 @@ addEventListener('scroll',()=>{
 },{passive:true});
 
 /* ---------- 마그네틱 링크 ---------- */
-if(!still)document.querySelectorAll('nav a,nav .k,.arr,.more').forEach(el=>{
-  el.classList.add('mag');
-  el.addEventListener('mousemove',e=>{const r=el.getBoundingClientRect();
-    el.style.transform=`translate(${(e.clientX-r.left-r.width/2)*.3}px,${(e.clientY-r.top-r.height/2)*.3}px)`;});
-  el.addEventListener('mouseleave',()=>el.style.transform='');
-});
+function bindMagnetic(){
+  if(still)return;
+  document.querySelectorAll('nav a,nav .k,.arr,.more').forEach(el=>{
+    if(el._m)return;el._m=1;
+    el.classList.add('mag');
+    el.addEventListener('mousemove',e=>{const r=el.getBoundingClientRect();
+      el.style.transform=`translate(${(e.clientX-r.left-r.width/2)*.3}px,${(e.clientY-r.top-r.height/2)*.3}px)`;});
+    el.addEventListener('mouseleave',()=>el.style.transform='');
+  });
+}
+bindMagnetic();
 
 /* ---------- 프로젝트 상세 패널 ---------- */
 const dp=document.getElementById('dp'),dbox=dp.firstElementChild,closeDp=()=>dp.classList.remove('open');
-document.querySelectorAll('#pgrid .card').forEach(c=>c.addEventListener('click',e=>{
-  e.preventDefault();const h=c.getAttribute('href'),more=c.dataset.more;
-  dbox.innerHTML=`<button class="x" aria-label="Close">×</button><div class="ico">${c.querySelector('.ico').textContent}</div><h3>${c.querySelector('h3').textContent}</h3><p>${c.querySelector('p').innerHTML}</p>${more?`<p>${more}</p>`:''}<div class="meta">${c.querySelector('.meta').innerHTML}</div>${h&&h!=='#'?`<a class="more" href="${h}" target="_blank" rel="noopener">${t('open')}</a>`:''}`;
-  dp.classList.add('open');
-}));
 dp.addEventListener('click',e=>{if(e.target===dp||e.target.closest('.x'))closeDp();});
 addEventListener('keydown',e=>{if(e.key==='Escape')closeDp();});
 
 /* ---------- Ctrl/Cmd+K 검색 팔레트 ---------- */
 const pal=document.getElementById('pal'),pi=pal.querySelector('input'),pl=pal.querySelector('ul');let sel=0,res=[];
 const cmds=()=>[
-  ...[['projects','Projects','프로젝트'],['blog','Blog','블로그']].map(s=>({t:t('go')+(lang==='ko'?s[2]:s[1]),k:t('section'),f:()=>location.hash='#'+s[0]})),
-  ...PR.map((p,i)=>({t:p.t,k:t('project'),f:()=>{location.hash='#projects';showPr(i);}})),
+  ...[['projects','navProjects'],['blog','navBlog']].map(s=>({t:t('go')+t(s[1]),k:t('section'),f:()=>location.hash='#'+s[0]})),
+  ...PR.map((p,i)=>({t:pt(p),k:t('project'),f:()=>{location.hash='#projects';showPr(i);}})),
   ...posts.map(p=>({t:p.t,k:t('post'),f:()=>open('https://mo-bi.tistory.com/'+p.id,'_blank')}))];
 function pr(){
   const q=pi.value.toLowerCase();res=cmds().filter(c=>c.t.toLowerCase().includes(q)).slice(0,8);sel=Math.max(0,Math.min(sel,res.length-1));
@@ -554,24 +575,30 @@ pl.addEventListener('click',e=>{const li=e.target.closest('li[data-i]');if(li){p
 pal.addEventListener('click',e=>{if(e.target===pal)po(false);});
 document.getElementById('kb').addEventListener('click',e=>{e.preventDefault();po(true);});
 
-applyLang();
 /* ---------- Skills ---------- */
-const SK=[["Computer Languages","",4,["C / C++","Python","Verilog / VHDL","HTML / CSS","MATLAB Script","Ladder Logic","Bash / Shell Script","Assembly (x86 / ARM)"]],
-["AI & Data Analysis","AICE Associate",2,["Scikit-Learn","Pandas, NumPy","Jupyter Notebook"]],
-["Hardware & Embedded","",3,["Raspberry Pi","ESP32","Arduino","Altera FPGA (Quartus)","PLC (LS XG5000)"]],
-["Tools & Software","",3,["OpenCV","Intel Quartus Prime","MATLAB","Notion / Git"]],
-["Semiconductor & Core Engineering","",6,["Semiconductor Processes","Photolithography","Etching","Deposition","Equipment Power Control","Transmission Line & Circuit Control"]]];
+const SK=[["Computer Languages","",4,["C / C++","Python","Verilog / VHDL","HTML / CSS","MATLAB Script","Ladder Logic","Bash / Shell Script","Assembly (x86 / ARM)"],"컴퓨터 언어"],
+["AI & Data Analysis","AICE Associate",2,["Scikit-Learn","Pandas, NumPy","Jupyter Notebook"],"AI & 데이터 분석"],
+["Hardware & Embedded","",3,["Raspberry Pi","ESP32","Arduino","Altera FPGA (Quartus)","PLC (LS XG5000)"],"하드웨어 & 임베디드"],
+["Tools & Software","",3,["OpenCV","Intel Quartus Prime","MATLAB","Notion / Git"],"툴 & 소프트웨어"],
+["Semiconductor & Core Engineering","",6,["Semiconductor Processes","Photolithography","Etching","Deposition","Equipment Power Control","Transmission Line & Circuit Control"],"반도체 & 핵심 공학"]];
 const acc=document.getElementById('skgrid');
-acc.innerHTML=SK.map((g,n)=>`<div class="ac${n===0?' open':''}"><button class="ah" aria-expanded="${n===0}"><span class="no">0${n+1}</span><span class="nm">${g[0].replace('&','&amp;')}${g[1]?`<small>${g[1]}</small>`:''}</span><span class="pv">${g[3].slice(0,3).join(' · ')}</span><span class="ct">${String(g[3].length).padStart(2,'0')}</span><span class="pm"></span></button><div class="ab"><div><div class="pills">${g[3].map((x,i)=>`<span class="pill" style="--i:${i}">${x}</span>`).join('')}</div></div></div></div>`).join('');
 let lock=0,ht;
-const setOpen=(r,on)=>{acc.querySelectorAll('.ac').forEach(x=>{x.classList.remove('open');x.firstChild.setAttribute('aria-expanded','false');});
-  if(on){r.classList.add('open');r.firstChild.setAttribute('aria-expanded','true');}lock=Date.now()+650;};
+function renderSkills(init){
+  acc.innerHTML=SK.map((g,n)=>{
+    const name=(lang==='ko'&&g[4])?g[4]:g[0];
+    return `<div class="ac${n===0?' open':''}${init?'':' vis'}"><button class="ah" aria-expanded="${n===0}"><span class="no">0${n+1}</span><span class="nm">${name.replace('&','&amp;')}${g[1]?`<small>${g[1]}</small>`:''}</span><span class="pv">${g[3].slice(0,3).join(' · ')}</span><span class="ct">${String(g[3].length).padStart(2,'0')}</span><span class="pm"></span></button><div class="ab"><div><div class="pills">${g[3].map((x,i)=>`<span class="pill" style="--i:${i}">${x}</span>`).join('')}</div></div></div></div>`;
+  }).join('');
+}
+renderSkills(true);
+/* hover=true: 호버로 열 때는 잠금을 걸지 않아 옆 항목으로 바로 넘어갈 수 있음 */
+const setOpen=(r,on,hover)=>{acc.querySelectorAll('.ac').forEach(x=>{x.classList.remove('open');x.firstChild.setAttribute('aria-expanded','false');});
+  if(on){r.classList.add('open');r.firstChild.setAttribute('aria-expanded','true');}
+  if(!hover)lock=Date.now()+650;};
 acc.addEventListener('click',e=>{const h=e.target.closest('.ah');if(h)setOpen(h.parentElement,!h.parentElement.classList.contains('open'));});
-if(matchMedia('(hover:hover)').matches){ /* 호버: 0.15초 머물면 열림, 나가도 닫히지 않음 */
-  acc.addEventListener('mouseover',e=>{clearTimeout(ht);const h=e.target.closest('.ah');
+if(matchMedia('(hover:hover)').matches){ /* 호버: 마우스가 올라가는 즉시 열림 */
+  acc.addEventListener('mouseover',e=>{const h=e.target.closest('.ah');
     if(!h||Date.now()<lock)return;const r=h.parentElement;if(r.classList.contains('open'))return;
-    ht=setTimeout(()=>setOpen(r,true),150);});
-  acc.addEventListener('mouseleave',()=>clearTimeout(ht));
+    setOpen(r,true,true);});
 }
 const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){io.unobserve(e.target);setTimeout(()=>e.target.classList.add('vis'),e.target.dataset.d);}}),{threshold:.1});
 acc.querySelectorAll('.ac').forEach((el,i)=>{el.dataset.d=i*90;io.observe(el);});
@@ -579,10 +606,10 @@ acc.querySelectorAll('.ac').forEach((el,i)=>{el.dataset.d=i*90;io.observe(el);})
 /* ---------- Projects: Spotlight list ---------- */
 /* href를 실제 주소로 바꾸면 "Open project" 링크가 생겨요. more에 추가 설명을 넣을 수 있어요 */
 const PR=[
-{t:'AI Running Coach',href:'#',more:'',d:'A training coach that analyzes my runs and plans the next session. Built on Google Apps Script with the Gemini API, wrapped in a dark, Toss-inspired UI.',tg:['Apps Script','Gemini API']},
-{t:'Index & ETF DCA Signal',href:'#',more:'',d:'A decision tool for dollar-cost averaging into index funds and ETFs. It shows when to add the next fixed-amount purchase, and runs as a single HTML file.',tg:['HTML/JS','Index / ETF']},
-{t:'Swarm Drone Control System',href:'#',more:'',d:'Capstone project: multiple drones flying in formation. I worked on the system architecture, the flight controller, and the hardware.',tg:['Capstone','Hardware']},
-{t:'Wireless Charging Pad with Outlets',href:'#',more:'',d:'A wireless charging pad with built-in power outlets, so one plug charges your phone and powers your other gadgets.',tg:['Hardware','Power']}];
+{t:'AI Running Coach',kt:'AI 러닝 코치',href:'#',more:'',d:'A training coach that analyzes my runs and plans the next session. Built on Google Apps Script with the Gemini API, wrapped in a dark, Toss-inspired UI.',kd:'달리기 기록을 분석해 다음 훈련을 계획해주는 코치입니다. Google Apps Script와 Gemini API 기반이며, 토스 스타일의 다크 UI로 만들었습니다.',tg:['Apps Script','Gemini API']},
+{t:'Index & ETF DCA Signal',kt:'지수·ETF 적립식 투자 시그널',href:'#',more:'',d:'A decision tool for dollar-cost averaging into index funds and ETFs. It shows when to add the next fixed-amount purchase, and runs as a single HTML file.',kd:'지수와 ETF에 정액 적립식으로 투자할 때 다음 매수 시점을 알려주는 도구입니다. 단일 HTML 파일로 동작합니다.',tg:['HTML/JS','Index / ETF']},
+{t:'Swarm Drone Control System',kt:'군집 드론 제어 시스템',href:'#',more:'',d:'Capstone project: multiple drones flying in formation. I worked on the system architecture, the flight controller, and the hardware.',kd:'캡스톤 프로젝트로, 여러 드론이 편대 비행하는 시스템입니다. 시스템 아키텍처, 비행 제어기, 하드웨어를 담당했습니다.',tg:['Capstone','Hardware']},
+{t:'Wireless Charging Pad with Outlets',kt:'콘센트 일체형 무선충전 패드',href:'#',more:'',d:'A wireless charging pad with built-in power outlets, so one plug charges your phone and powers your other gadgets.',kd:'콘센트가 내장된 무선충전 패드입니다. 플러그 하나로 휴대폰을 충전하고 다른 기기에도 전원을 공급합니다.',tg:['Hardware','Power']}];
 const CH="M0 78 C30 78 40 34 70 44 S110 84 140 54 S180 22 200 30",GR='<path class="gl" d="M0 25H200M0 50H200M0 75H200"/>';
 const VZ=[
  /* 0 AI Running Coach: weekly mileage + pace trend + live heart rate */
@@ -658,13 +685,32 @@ function drone(cv){const x=cv.getContext('2d'),w=cv.width=cv.offsetWidth*2||400,
     x.font='600 '+Math.round(u*.3)+'px sans-serif';x.fillStyle='#566077';x.textAlign='center';
     x.fillText('MAIN · CAM',M[0],M[1]-u*.55);x.fillText('TARGET',T[0],T[1]+u*1.15);
     requestAnimationFrame(f);})();}
-const l2=document.getElementById('l2'),p2=document.getElementById('p2');let curP=-1;
-l2.innerHTML=PR.map((p,i)=>`<li data-i="${i}" tabindex="0">${p.t}<small>0${i+1}</small></li>`).join('');
-function showPr(i){if(i===curP)return;curP=i;const p=PR[i];l2.querySelectorAll('li').forEach((li,k)=>li.classList.toggle('on',k===i));
-  p2.innerHTML=`<div class="v">${VZ[i]}</div><h3>${p.t}</h3><p>${p.d}</p>${p.more?`<p>${p.more}</p>`:''}<div class="tags">${p.tg.map(x=>`<span class="tag">${x}</span>`).join('')}</div>${p.href&&p.href!=='#'?`<a class="more" href="${p.href}" target="_blank" rel="noopener">${t('open')}</a>`:''}`;
+const l2=document.getElementById('l2'),p2=document.getElementById('p2');let curP=-1,curIdx=0;
+function renderProjList(){
+  l2.innerHTML=PR.map((p,i)=>`<li data-i="${i}" tabindex="0">${pt(p)}<small>0${i+1}</small></li>`).join('');
+}
+function showPr(i){if(i===curP)return;curP=i;curIdx=i;const p=PR[i];l2.querySelectorAll('li').forEach((li,k)=>li.classList.toggle('on',k===i));
+  p2.innerHTML=`<div class="v">${VZ[i]}</div><h3>${pt(p)}</h3><p>${pd(p)}</p>${p.more?`<p>${p.more}</p>`:''}<div class="tags">${p.tg.map(x=>`<span class="tag">${x}</span>`).join('')}</div>${p.href&&p.href!=='#'?`<a class="more" href="${p.href}" target="_blank" rel="noopener">${t('open')}</a>`:''}`;
   p2.querySelectorAll('canvas.dr').forEach(drone);}
 ['mouseover','click','focusin'].forEach(ev=>l2.addEventListener(ev,e=>{const li=e.target.closest('li');if(li)showPr(+li.dataset.i);}));
+renderProjList();
 showPr(0);
+
+/* ---------- 한/영 전환 ---------- */
+function setLang(l){
+  lang=l;
+  applyStatic();
+  renderSkills(false);
+  renderProjList();
+  curP=-1;showPr(curIdx);
+  bchips.innerHTML='';
+  renderPosts(false);
+  updNow();
+  bindMagnetic();
+}
+document.getElementById('lg').addEventListener('click',()=>setLang(lang==='ko'?'en':'ko'));
+
+applyStatic();
 </script>
 </body>
 </html>
