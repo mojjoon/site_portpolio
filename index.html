@@ -317,3 +317,477 @@ function renderPosts(reset){
   if(!reset)renderChips();
   bgrid.innerHTML=vis().map(p=>`<a class="album" href="https://mo-bi.tistory.com/${p.id}" target="_blank" rel="noopener" draggable="false"><div class="thumb"><div class="ph"><b>${p.ph||'#'+p.id}</b><span>${p.t}</span></div>${p.img?`<img src="${p.img}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">`:''}</div></a>`).join('');
   dots.innerHTML=vis().map((_,i)=>`<button data-i="${i}" aria-label="Post ${i+1}"></button>`).join('');
+  if(reset)[...bgrid.children].forEach((a,i)=>{a.style.setProperty('--i',Math.min(i,6));a.classList.add('in');});
+  bindCards();updNow();
+  if(window.cfRefresh)window.cfRefresh(reset);
+}
+/* 티스토리 RSS에서 최신 글을 가져오고, 실패하면 위 내장 데이터를 그대로 사용 */
+const gOf=cat=>{const p=cat.split('/'),l=p[p.length-1],f=[...TREE.major,...TREE.others].find(x=>x[0]===p[0]||x[0]===l||x[2].includes(l));return f?f[0]:p[0];};
+const RSS='https://mo-bi.tistory.com/rss';
+fetch(RSS).then(r=>r.text())
+  .catch(()=>fetch('https://api.allorigins.win/raw?url='+encodeURIComponent(RSS)).then(r=>r.text()))
+  .catch(()=>fetch('https://corsproxy.io/?'+encodeURIComponent(RSS)).then(r=>r.text()))
+  .then(s=>{
+  const xml=new DOMParser().parseFromString(s,'text/xml');
+  const items=[...xml.querySelectorAll('item')].slice(0,12).map(i=>{
+    const g=k=>(i.querySelector(k)||{}).textContent||'';
+    const link=g('link'),id=(link.match(/\/(\d+)\/?$/)||[])[1];
+    const doc=new DOMParser().parseFromString(g('description'),'text/html');
+    const raw=doc.body.textContent.replace(/\s+/g,' ').trim(),im=doc.querySelector('img'),dt=new Date(g('pubDate'));
+    return id?{id,t:g('title'),g:gOf(g('category')||'blog'),c:(g('category')||'blog').split('/').pop(),x:raw.slice(0,90)+'…',img:im?im.getAttribute('src'):'',d:`${dt.getFullYear()}.${String(dt.getMonth()+1).padStart(2,'0')}.${String(dt.getDate()).padStart(2,'0')}`}:null;
+  }).filter(Boolean);
+  if(items.length){const m=new Map(posts.map(p=>[String(p.id),p]));items.forEach(p=>m.set(String(p.id),Object.assign({},p,m.get(String(p.id))||{})));posts=[...m.values()].sort((a,b)=>b.id-a.id);renderPosts(true);}
+}).catch(()=>{});
+
+/* ---------- 파란 커서 ---------- */
+const root=document.documentElement,dot=document.querySelector('.c-dot'),ring=document.querySelector('.c-ring');
+let mx=innerWidth/2,my=innerHeight/2,rx=mx,ry=my;
+if(matchMedia('(pointer:fine)').matches){
+  root.classList.add('has-cursor');
+  addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;dot.style.transform=`translate(${mx}px,${my}px)`;
+    ring.classList.toggle('big',!!e.target.closest('a,button,.card,.cf'));
+    const L=e.target.closest('.cf')?t('Drag'):e.target.closest('.card:not(.sk)')?t('Open'):'';ring.firstChild.textContent=L;ring.classList.toggle('lab',!!L);});
+  addEventListener('mousedown',e=>{ring.classList.add('down');
+    const r=document.createElement('div');r.className='ripple';r.style.left=e.clientX+'px';r.style.top=e.clientY+'px';
+    document.body.appendChild(r);setTimeout(()=>r.remove(),700);});
+  addEventListener('mouseup',()=>ring.classList.remove('down'));
+  (function loop(){rx+=(mx-rx)*.18;ry+=(my-ry)*.18;ring.style.transform=`translate(${rx}px,${ry}px)`;requestAnimationFrame(loop);})();
+}
+
+/* ---------- 타이틀: 커서와 가까운 글자가 굵어지고 파랗게 ---------- */
+const title=document.getElementById('title');
+title.innerHTML='MO JUNHYUN'.split('').map(c=>c===' '?'<br>':`<span aria-hidden="true">${c}</span>`).join('');
+const letters=[...title.children].filter(e=>e.tagName==='SPAN');
+addEventListener('mousemove',e=>{
+  letters.forEach(s=>{
+    const b=s.getBoundingClientRect(),dx=e.clientX-(b.left+b.width/2),dy=e.clientY-(b.top+b.height/2);
+    const p=Math.max(0,1-Math.hypot(dx,dy)/(b.height*1.1));
+    s.style.fontWeight=Math.round(300+p*500);
+    s.style.color=p>.05?`color-mix(in srgb,var(--blue) ${Math.round(p*100)}%,#eef1f7)`:'';
+    s.style.transform=`translateY(${-p*14}px)`;
+  });
+});
+
+/* ---------- 히어로: 커서에 반응하는 입자 네트워크 ---------- */
+const cv=document.getElementById('net'),cx=cv.getContext('2d');
+let W,H,pts=[];const still=matchMedia('(prefers-reduced-motion:reduce)').matches;
+function size(){W=cv.width=cv.offsetWidth;H=cv.height=cv.offsetHeight;
+  pts=Array.from({length:Math.min(90,Math.floor(W*H/14000))},()=>({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.35,vy:(Math.random()-.5)*.35}));}
+size();addEventListener('resize',size);
+let hx=-999,hy=-999;
+addEventListener('mousemove',e=>{const r=cv.getBoundingClientRect();hx=e.clientX-r.left;hy=e.clientY-r.top;});
+function draw(){
+  cx.clearRect(0,0,W,H);
+  for(const p of pts){
+    if(!still){p.x+=p.vx;p.y+=p.vy;}
+    if(p.x<0||p.x>W)p.vx*=-1;if(p.y<0||p.y>H)p.vy*=-1;
+    const dx=p.x-hx,dy=p.y-hy,d=Math.hypot(dx,dy);
+    if(d<140&&d>0){p.x+=dx/d*(140-d)*.03;p.y+=dy/d*(140-d)*.03;}
+    cx.fillStyle='rgba(47,123,255,.85)';cx.beginPath();cx.arc(p.x,p.y,1.8,0,6.283);cx.fill();
+  }
+  for(let i=0;i<pts.length;i++){
+    const a=pts[i],dm=Math.hypot(a.x-hx,a.y-hy);
+    if(dm<200){cx.strokeStyle=`rgba(80,150,255,${(1-dm/200)*.8})`;cx.beginPath();cx.moveTo(a.x,a.y);cx.lineTo(hx,hy);cx.stroke();}
+    for(let j=i+1;j<pts.length;j++){
+      const b=pts[j],d=Math.hypot(a.x-b.x,a.y-b.y);
+      if(d<120){cx.strokeStyle=`rgba(47,123,255,${(1-d/120)*.3})`;cx.beginPath();cx.moveTo(a.x,a.y);cx.lineTo(b.x,b.y);cx.stroke();}
+    }
+  }
+  requestAnimationFrame(draw);
+}
+draw();
+
+/* ---------- 카드: 빛이 번지고 살짝 기울어짐 ---------- */
+function bindCards(){
+  document.querySelectorAll('.card').forEach(c=>{
+    if(c._b)return;c._b=1;
+    c.addEventListener('mousemove',e=>{
+      const r=c.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;
+      c.style.setProperty('--mx',x+'px');c.style.setProperty('--my',y+'px');
+      c.style.transform=`rotateX(${(.5-y/r.height)*7}deg) rotateY(${(x/r.width-.5)*7}deg)`;
+    });
+    c.addEventListener('mouseleave',()=>c.style.transform='');
+  });
+}
+
+/* ---------- Blog Cover Flow: 관성 드래그 + 부드러운 정지 ---------- */
+(function(){
+  const cf=document.getElementById('cf'),cap=document.getElementById('cap');
+  let items=[],n=0,pos=0,vel=0,target=null,drag=false,wheeling=false,raf=0,last=0;
+  let moved=0,sx=0,sp=0,lx=0,lt=0,shown=-1,wt;
+  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+  const unit=()=>(items[0]?items[0].offsetWidth:240)*.42;
+  function showCap(k){
+    shown=k;const p=vis()[k];if(!p)return;document.getElementById("cnt").textContent=`${k+1} / ${n}`;
+    cap.innerHTML=`<h3><a href="https://mo-bi.tistory.com/${p.id}" target="_blank" rel="noopener">${p.t}</a></h3><div class="m">${p.d?p.d+' · ':''}${p.c}</div><p>${p.x}</p>`;
+    [...dots.children].forEach((d,i)=>d.classList.toggle('on',i===k));
+  }
+  function layout(){
+    if(!n)return;
+    const w=items[0].offsetWidth,near=w*.62,gap=w*.26;
+    items.forEach((el,i)=>{
+      const d=i-pos,ad=Math.abs(d),s=Math.sign(d),c=Math.min(ad,1);
+      const x=ad<=1?d*near:s*(near+(ad-1)*gap);
+      el.style.transform=`translate(-50%,-50%) translateX(${x}px) translateZ(${-c*160-Math.max(0,ad-1)*20}px) rotateY(${-s*c*58}deg)`;
+      el.style.opacity=clamp(1-(ad-3)*.6,0,1);
+      el.style.zIndex=1000-Math.round(ad*10);
+      el.style.pointerEvents=ad>4?'none':'';
+    });
+    const k=clamp(Math.round(pos),0,n-1);
+    if(k!==shown)showCap(k);
+  }
+  function tick(t){
+    const dt=Math.min(40,t-last||16);last=t;
+    if(!drag&&!wheeling){
+      const max=n-1;
+      if(target!==null){pos+=(target-pos)*(1-Math.exp(-dt/130));vel=0;if(Math.abs(target-pos)<.0008){pos=target;target=null;}}
+      else if(Math.abs(vel)>.0005){pos+=vel*dt;vel*=Math.exp(-dt/380);if(pos<0||pos>max){target=clamp(pos,0,max);vel=0;}}
+      else{vel=0;target=clamp(Math.round(pos),0,max);}
+    }
+    layout();
+    raf=(drag||wheeling||target!==null||Math.abs(vel)>.0005)?requestAnimationFrame(tick):0;
+  }
+  const kick=()=>{if(!raf){last=performance.now();raf=requestAnimationFrame(tick);}};
+  const go=d=>{if(!n)return;target=clamp(Math.round(target!==null?target:pos)+d,0,n-1);vel=0;kick();};
+  window.cfTo=i=>{target=clamp(i,0,n-1);vel=0;kick();};
+  cf.addEventListener('pointerdown',e=>{
+    if(e.pointerType==='mouse'&&e.button!==0)return;
+    drag=true;moved=0;sx=lx=e.clientX;sp=pos;vel=0;target=null;lt=performance.now();kick();
+  });
+  addEventListener('pointermove',e=>{
+    if(!drag)return;
+    const now=performance.now(),dt=Math.max(1,now-lt),u=unit();
+    vel=vel*.6+((lx-e.clientX)/u/dt)*.4;lx=e.clientX;lt=now;moved=Math.max(moved,Math.abs(e.clientX-sx));
+    const raw=sp+(sx-e.clientX)/u,max=n-1;
+    pos=raw<0?raw*.35:raw>max?max+(raw-max)*.35:raw;
+  });
+  function release(){if(!drag)return;drag=false;if(performance.now()-lt>90)vel=0;vel=clamp(vel,-.02,.02);kick();}
+  addEventListener('pointerup',release);addEventListener('pointercancel',release);
+  cf.addEventListener('click',e=>{
+    const a=e.target.closest('.album');if(!a)return;
+    if(moved>5){e.preventDefault();return;}
+    const i=items.indexOf(a);
+    if(i!==clamp(Math.round(pos),0,n-1)){e.preventDefault();target=i;vel=0;kick();}
+  });
+  cf.addEventListener('dragstart',e=>e.preventDefault());
+  cf.addEventListener('wheel',e=>{
+    const dx=Math.abs(e.deltaX)>Math.abs(e.deltaY)?e.deltaX:(e.shiftKey?e.deltaY:0);
+    if(!dx)return;
+    e.preventDefault();target=null;vel=0;wheeling=true;
+    pos=clamp(pos+dx/(unit()*1.3),-.3,n-.7);kick();
+    clearTimeout(wt);wt=setTimeout(()=>{wheeling=false;kick();},120);
+  },{passive:false});
+  cf.addEventListener('keydown',e=>{
+    if(e.key==='ArrowLeft'){e.preventDefault();go(-1);}
+    if(e.key==='ArrowRight'){e.preventDefault();go(1);}
+  });
+  document.getElementById('prev').onclick=()=>go(-1);
+  document.getElementById('next').onclick=()=>go(1);
+  cf.addEventListener('mousemove',e=>{const a=e.target.closest('.album');if(!a)return;const r=a.getBoundingClientRect();
+    a.style.setProperty('--gx',(e.clientX-r.left)/r.width*100+'%');a.style.setProperty('--gy',(e.clientY-r.top)/r.height*100+'%');});
+  addEventListener('resize',layout);
+  window.cfRefresh=r=>{items=[...bgrid.children];n=items.length;pos=r?0:clamp(pos,0,Math.max(0,n-1));shown=-1;target=null;vel=0;layout();};
+  cfRefresh();
+})();
+
+/* ---------- 스크롤 진행선 + 현재 섹션 ---------- */
+const bar=document.getElementById('bar'),secs=['projects','skills','blog'].map(id=>document.getElementById(id)),navs=[...document.querySelectorAll('nav a.l')];
+addEventListener('scroll',()=>{
+  bar.style.transform=`scaleX(${scrollY/Math.max(1,document.documentElement.scrollHeight-innerHeight)})`;
+  const y=scrollY+innerHeight*.4;
+  navs.forEach((a,i)=>a.classList.toggle('on',y>=secs[i].offsetTop&&(!secs[i+1]||y<secs[i+1].offsetTop)));
+},{passive:true});
+
+/* ---------- 마그네틱 링크 ---------- */
+function bindMagnetic(){
+  if(still)return;
+  document.querySelectorAll('nav a,nav .k,.arr,.more').forEach(el=>{
+    if(el._m)return;el._m=1;
+    el.classList.add('mag');
+    el.addEventListener('mousemove',e=>{const r=el.getBoundingClientRect();
+      el.style.transform=`translate(${(e.clientX-r.left-r.width/2)*.3}px,${(e.clientY-r.top-r.height/2)*.3}px)`;});
+    el.addEventListener('mouseleave',()=>el.style.transform='');
+  });
+}
+bindMagnetic();
+
+/* ---------- 프로젝트 상세 패널 ---------- */
+const dp=document.getElementById('dp'),dbox=dp.firstElementChild,closeDp=()=>dp.classList.remove('open');
+dp.addEventListener('click',e=>{if(e.target===dp||e.target.closest('.x'))closeDp();});
+addEventListener('keydown',e=>{if(e.key==='Escape')closeDp();});
+
+/* ---------- Ctrl/Cmd+K 검색 팔레트 ---------- */
+const pal=document.getElementById('pal'),pi=pal.querySelector('input'),pl=pal.querySelector('ul');let sel=0,res=[];
+const cmds=()=>[
+  ...[['projects','navProjects'],['blog','navBlog']].map(s=>({t:t('go')+t(s[1]),k:t('section'),f:()=>location.hash='#'+s[0]})),
+  ...PR.map((p,i)=>({t:pt(p),k:t('project'),f:()=>{location.hash='#projects';showPr(i);}})),
+  ...posts.map(p=>({t:p.t,k:t('post'),f:()=>open('https://mo-bi.tistory.com/'+p.id,'_blank')}))];
+function pr(){
+  const q=pi.value.toLowerCase();res=cmds().filter(c=>c.t.toLowerCase().includes(q)).slice(0,8);sel=Math.max(0,Math.min(sel,res.length-1));
+  pl.innerHTML=res.map((c,i)=>`<li class="${i===sel?'on':''}" data-i="${i}">${c.t}<small>${c.k}</small></li>`).join('')||`<li>${t('none')}</li>`;
+}
+const po=v=>{pal.classList.toggle('open',v);if(v){pi.value='';sel=0;pr();pi.focus();}};
+addEventListener('keydown',e=>{
+  const o=pal.classList.contains('open');
+  if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){e.preventDefault();po(!o);}
+  else if(o){
+    if(e.key==='Escape')po(false);
+    else if(e.key==='ArrowDown'){e.preventDefault();sel++;pr();}
+    else if(e.key==='ArrowUp'){e.preventDefault();sel--;pr();}
+    else if(e.key==='Enter'&&res[sel]){po(false);res[sel].f();}
+  }
+});
+pi.addEventListener('input',()=>{sel=0;pr();});
+pl.addEventListener('click',e=>{const li=e.target.closest('li[data-i]');if(li){po(false);res[li.dataset.i].f();}});
+pal.addEventListener('click',e=>{if(e.target===pal)po(false);});
+document.getElementById('kb').addEventListener('click',e=>{e.preventDefault();po(true);});
+
+/* ---------- Skills ---------- */
+const SK=[["Computer Languages","",4,["C / C++","Python","Verilog / VHDL","HTML / CSS","MATLAB Script","Ladder Logic","Bash / Shell Script","Assembly (x86 / ARM)"]],
+["AI & Data Analysis","AICE Associate",2,["Scikit-Learn","Pandas, NumPy","Jupyter Notebook"]],
+["Hardware & Embedded","",3,["Raspberry Pi","ESP32","Arduino","Altera FPGA (Quartus)","PLC (LS XG5000)"]],
+["Tools & Software","",3,["OpenCV","Intel Quartus Prime","MATLAB","Notion / Git"]],
+["Semiconductor & Core Engineering","",6,["Semiconductor Processes","Photolithography","Etching","Deposition","Equipment Power Control","Transmission Line & Circuit Control"]]];
+const acc=document.getElementById('skgrid');
+let lock=0,ht;
+function renderSkills(init){
+  acc.innerHTML=SK.map((g,n)=>{
+    const name=g[0];
+    return `<div class="ac${n===0?' open':''}${init?'':' vis'}"><button class="ah" aria-expanded="${n===0}"><span class="no">0${n+1}</span><span class="nm">${name.replace('&','&amp;')}${g[1]?`<small>${g[1]}</small>`:''}</span><span class="pv">${g[3].slice(0,3).join(' · ')}</span><span class="ct">${String(g[3].length).padStart(2,'0')}</span><span class="pm"></span></button><div class="ab"><div><div class="pills">${g[3].map((x,i)=>`<span class="pill" style="--i:${i}">${x}</span>`).join('')}</div></div></div></div>`;
+  }).join('');
+}
+renderSkills(true);
+/* hover=true: 호버로 열 때는 잠금을 걸지 않아 옆 항목으로 바로 넘어갈 수 있음 */
+const setOpen=(r,on,hover)=>{acc.querySelectorAll('.ac').forEach(x=>{x.classList.remove('open');x.firstChild.setAttribute('aria-expanded','false');});
+  if(on){r.classList.add('open');r.firstChild.setAttribute('aria-expanded','true');}
+  if(!hover)lock=Date.now()+650;};
+acc.addEventListener('click',e=>{const h=e.target.closest('.ah');if(h)setOpen(h.parentElement,!h.parentElement.classList.contains('open'));});
+if(matchMedia('(hover:hover)').matches){ /* 호버: 마우스가 올라가는 즉시 열림 */
+  acc.addEventListener('mouseover',e=>{const h=e.target.closest('.ah');
+    if(!h||Date.now()<lock)return;const r=h.parentElement;if(r.classList.contains('open'))return;
+    setOpen(r,true,true);});
+}
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){io.unobserve(e.target);setTimeout(()=>e.target.classList.add('vis'),e.target.dataset.d);}}),{threshold:.1});
+acc.querySelectorAll('.ac').forEach((el,i)=>{el.dataset.d=i*90;io.observe(el);});
+
+/* ---------- Projects: Spotlight list ---------- */
+/* href를 실제 주소로 바꾸면 "Open project" 링크가 생겨요. more에 추가 설명을 넣을 수 있어요 */
+const PR=[
+{t:'AI Running Coach',kt:'AI 러닝 코치',href:'#',more:'',
+ d:'Logs run data (distance, pace, heart rate) and prescribes the next session with a load model: session load via TRIMP, injury risk via ACWR. The Gemini API generates the prescription from these metrics.',
+ kd:'달리기 기록(거리·페이스·심박)을 바탕으로 TRIMP 기반 훈련 부하와 ACWR 기반 부상 위험을 계산하고, 그 지표로 Gemini API가 다음 훈련을 처방합니다.',
+ tg:['Apps Script','Gemini API']},
+{t:'Index & ETF DCA Signal',kt:'지수·ETF 적립식 투자 시그널',href:'#',more:'',
+ d:'Fuses eight primary indicators (moving-average deviation, RSI, MACD, Bollinger %B, VIX slope, yield spread) with secondary signals into a weighted score. A GARCH(1,1) volatility regime sets entry thresholds and drives periodic DCA buys into index and ETF instruments.',
+ kd:'8개 핵심 지표(이평선 괴리, RSI, MACD, 볼린저 %B, VIX 기울기, 금리 스프레드)와 2차 지표를 가중 결합해 점수를 산출합니다. GARCH(1,1)로 변동성 국면을 추정해 임계값을 조정하고, 지수·ETF 정액 적립(DCA) 매수 타이밍을 결정합니다.',
+ tg:['HTML/JS','Index / ETF']},
+{t:'Wireless Charging Pad with Outlets',kt:'콘센트 일체형 무선충전 패드',href:'#',more:'',
+ d:'A detachable outlet adapter that couples to a Qi wireless charging pad. I tuned the transmitter and receiver coils into a resonant LC pair for power transfer, and extended the inductive link into an AC outlet for auxiliary loads.',
+ kd:'Qi 무선충전 패드에 결합하는 탈부착형 콘센트 어댑터입니다. 송신 코일과 수신 코일을 공진 LC 쌍으로 맞춰 전력을 전달하고, 유도 결합을 보조 부하용 AC 콘센트 인터페이스로 확장했습니다.',
+ tg:['Hardware','Power']},
+{t:'Swarm Drone Control System',kt:'군집 드론 제어 시스템',href:'#',more:'',
+ d:'A swarm system built on a dual-link architecture. The main drone performs camera-based visual tracking of a ground target and streams the estimated target position to the ground control pad over Wi-Fi. Sub-drones receive that estimate from the main drone over an nRF24L01 2.4 GHz link and hold formation around the target. The visual tracking pipeline is the core of the project, supported by system architecture, flight control, and hardware integration.',
+ kd:'군집 드론 시스템으로, 두 가지 무선 통신 구조로 이루어져 있습니다. 메인 드론이 탑재 카메라로 지상 타깃을 영상 기반으로 추적해 타깃 위치를 추정하는 것이 핵심이며, 추정 결과는 메인 패드와 메인 드론 사이 Wi-Fi 통신으로 전달됩니다. 메인 드론과 서브 드론은 nRF24L01(2.4GHz) 무선 모듈로 통신하며, 서브 드론들은 전달받은 타깃 위치를 기준으로 편대를 유지합니다. 시스템 아키텍처, 비행 제어기, 하드웨어 통합은 이 트래킹 파이프라인을 뒷받침하는 작업이었습니다.',
+ tg:['Capstone','Hardware']}];
+const CH="M0 78 C30 78 40 34 70 44 S110 84 140 54 S180 22 200 30",GR='<path class="gl" d="M0 25H200M0 50H200M0 75H200"/>';
+const VZ=[
+ /* 0 AI Running Coach */
+ `<svg class="vz" viewBox="0 0 200 100" preserveAspectRatio="xMidYMid meet">${GR}
+  <text class="tx" x="8" y="10">WEEKLY KM</text>
+  ${[18,30,24,40,34,52,44].map((h,i)=>`<rect class="bb" style="--i:${i}" x="${8+i*12}" y="${88-h}" width="8" height="${h}" rx="2" fill="${i===5?'#2f7bff':'#1b3a73'}"/>`).join('')}
+  <text class="tx" x="100" y="10">PACE</text><text class="tv" x="192" y="10" text-anchor="end">5'12"/km</text>
+  <path class="ln" pathLength="1" d="M100 44C112 40 118 30 130 32S150 42 160 28S182 18 192 22"/>
+  <circle cx="192" cy="22" r="2" fill="#9db8ff"><animate attributeName="r" values="2;5;2" dur="1.2s" repeatCount="indefinite"/><animate attributeName="opacity" values="1;.3;1" dur="1.2s" repeatCount="indefinite"/></circle>
+  <text class="tx" x="100" y="64">HEART RATE</text><text class="tv" x="192" y="64" text-anchor="end">152 bpm</text>
+  <path class="ln" pathLength="1" style="animation-duration:2.4s" d="M100 80H116l3-3 3 3H128l3-14 4 26 3-12H146l3-5 3 5H168l3-14 4 26 3-12H192"/>
+ </svg>`,
+
+ /* 1 Index & ETF DCA Signal: 출렁이는 가격선 + 저점마다 적립 매수 + 평균단가선 */
+ `<svg class="vz" viewBox="0 0 200 100" preserveAspectRatio="xMidYMid meet">
+  <style>
+   .ixn-line{fill:none;stroke:#2f7bff;stroke-width:2;stroke-linejoin:round;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:1;animation:ixnDraw 8s linear infinite}
+   @keyframes ixnDraw{0%{stroke-dashoffset:1;opacity:1}40%{stroke-dashoffset:0;opacity:1}90%{stroke-dashoffset:0;opacity:1}96%,100%{stroke-dashoffset:0;opacity:0}}
+   .ixn-area{opacity:0;animation:ixnFade 8s linear infinite}
+   @keyframes ixnFade{0%{opacity:0}40%{opacity:1}90%{opacity:1}96%,100%{opacity:0}}
+   .ixn-mk{opacity:0;transform-box:fill-box;transform-origin:center;animation:ixnPop 8s infinite}
+   @keyframes ixnPop{0%{opacity:0;transform:scale(0)}4%{opacity:1;transform:scale(1.4)}7%{transform:scale(1)}90%{opacity:1;transform:scale(1)}96%,100%{opacity:0;transform:scale(.6)}}
+   .ixn-avg{opacity:0;animation:ixnAvg 8s infinite}
+   @keyframes ixnAvg{0%{opacity:0}4%,90%{opacity:.9}96%,100%{opacity:0}}
+   .ixn-tx{font-family:var(--body);font-size:5.5px;letter-spacing:.12em;fill:#566077}
+   .ixn-buy{font-family:var(--body);font-size:5.5px;font-weight:600;fill:#9db8ff;text-anchor:middle}
+  </style>
+  <defs>
+   <linearGradient id="ixng" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#2f7bff" stop-opacity=".25"/>
+    <stop offset="1" stop-color="#2f7bff" stop-opacity="0"/>
+   </linearGradient>
+  </defs>
+  <path d="M0 25H200M0 50H200M0 75H200" stroke="#121a2b" stroke-width="1" fill="none"/>
+  <path class="ixn-area" d="M0 62L12 50L22 60L34 40L46 54L58 68L70 56L82 76L94 64L106 84L118 66L130 46L142 60L154 38L166 52L178 32L190 44L200 26V100H0Z" fill="url(#ixng)"/>
+  <path class="ixn-avg" style="animation-delay:2.4s" d="M58 70H200" fill="none" stroke="#9db8ff" stroke-width="1.2" stroke-dasharray="3 3"/>
+  <text class="ixn-tx ixn-avg" style="animation-delay:2.4s" x="198" y="66" text-anchor="end">AVG COST</text>
+  <text class="ixn-tx" x="6" y="10">PRICE</text>
+  <path id="ixnp" class="ixn-line" pathLength="1" d="M0 62L12 50L22 60L34 40L46 54L58 68L70 56L82 76L94 64L106 84L118 66L130 46L142 60L154 38L166 52L178 32L190 44L200 26"/>
+  <g class="ixn-mk" style="animation-delay:.93s"><circle cx="58" cy="68" r="3.2" fill="#2f7bff" stroke="#000" stroke-width="1.2"/><text class="ixn-buy" x="58" y="82">BUY</text></g>
+  <g class="ixn-mk" style="animation-delay:1.31s"><circle cx="82" cy="76" r="3.2" fill="#2f7bff" stroke="#000" stroke-width="1.2"/><text class="ixn-buy" x="82" y="90">BUY</text></g>
+  <g class="ixn-mk" style="animation-delay:1.70s"><circle cx="106" cy="84" r="3.2" fill="#2f7bff" stroke="#000" stroke-width="1.2"/><text class="ixn-buy" x="106" y="97">BUY</text></g>
+  <g class="ixn-mk" style="animation-delay:2.27s"><circle cx="142" cy="60" r="3.2" fill="#2f7bff" stroke="#000" stroke-width="1.2"/><text class="ixn-buy" x="142" y="51">BUY</text></g>
+  <circle r="2.4" fill="#9db8ff">
+   <animateMotion dur="8s" repeatCount="indefinite" keyPoints="0;1;1" keyTimes="0;0.4;1" calcMode="linear"><mpath href="#ixnp"/></animateMotion>
+   <animate attributeName="opacity" dur="8s" repeatCount="indefinite" values="0;1;1;0;0" keyTimes="0;.02;.9;.96;1"/>
+  </circle>
+ </svg>`,
+
+ /* 2 Wireless Charging Pad: 기기가 미끄러져 정렬 → 충전 → 들려서 이동 → 반복 */
+ `<svg class="vz" viewBox="0 0 200 100" preserveAspectRatio="xMidYMid meet">
+  <style>
+   .cwn-tx{font-family:var(--body);font-size:5.5px;letter-spacing:.12em;fill:#566077;text-anchor:middle}
+   .cwn-lbl{font-family:var(--body);font-size:6px;font-weight:600;letter-spacing:.2em;fill:#9db8ff;text-anchor:middle;opacity:0}
+   .cwn-l1{animation:cwnL1 9s infinite}
+   .cwn-l2{animation:cwnL2 9s infinite}
+   @keyframes cwnL1{0%,14%{opacity:0}20%,40%{opacity:1}46%,100%{opacity:0}}
+   @keyframes cwnL2{0%,50%{opacity:0}54%,80%{opacity:1}86%,100%{opacity:0}}
+   .cwn-phone{transform-box:fill-box;transform-origin:center;animation:cwnMove 9s ease-in-out infinite}
+   @keyframes cwnMove{0%{transform:translate(-64px,-2px) rotate(-16deg);opacity:0}5%{opacity:1}16%{transform:translate(-58px,-2px) rotate(-16deg);opacity:1}30%{transform:translate(-8px,0) rotate(6deg)}38%{transform:translate(5px,-2px) rotate(-3deg)}46%,80%{transform:translate(0,0) rotate(0deg);opacity:1}88%{transform:translate(34px,-30px) rotate(20deg);opacity:1}95%,100%{transform:translate(64px,-40px) rotate(28deg);opacity:0}}
+   .cwn-bat{transform-box:fill-box;transform-origin:0 50%;animation:cwnBat 9s infinite}
+   @keyframes cwnBat{0%,48%{transform:scaleX(.15)}60%{transform:scaleX(.45)}74%{transform:scaleX(.8)}82%,100%{transform:scaleX(1)}}
+   .cwn-glow{opacity:0;animation:cwnGlow 9s infinite}
+   @keyframes cwnGlow{0%,46%{opacity:0}52%,82%{opacity:.7}88%,100%{opacity:0}}
+   .cwn-charge{opacity:0;animation:cwnOn 9s infinite}
+   @keyframes cwnOn{0%,50%{opacity:0}52%,82%{opacity:1}88%,100%{opacity:0}}
+   .cwn-ring{fill:none;stroke:#2f7bff;stroke-width:1;transform-box:fill-box;transform-origin:center;animation:cwnRing 1.6s linear infinite}
+   @keyframes cwnRing{0%{transform:scale(.4);opacity:.9}100%{transform:scale(2.4);opacity:0}}
+   .cwn-flow{fill:none;stroke:#2f7bff;stroke-width:1.4;stroke-dasharray:3 5;animation:cwnFlow .8s linear infinite}
+   @keyframes cwnFlow{to{stroke-dashoffset:-16}}
+   .cwn-outled{animation:cwnOutLed 2s infinite}
+   @keyframes cwnOutLed{0%,100%{opacity:.3}50%{opacity:1}}
+  </style>
+
+  <text class="cwn-tx" x="179" y="16">AC 220V</text>
+  <path d="M179 56C179 72 170 80 160 84" fill="none" stroke="#566077" stroke-width="1.4"/>
+  <g class="cwn-charge"><path class="cwn-flow" d="M179 56C179 72 170 80 160 84"/></g>
+
+  <rect x="166" y="22" width="26" height="34" rx="6" fill="#080c14" stroke="#566077" stroke-width="1.2"/>
+  <rect x="172" y="32" width="3" height="9" rx="1" fill="#566077"/>
+  <rect x="183" y="32" width="3" height="9" rx="1" fill="#566077"/>
+  <circle class="cwn-outled" cx="179" cy="48" r="1.6" fill="#2f7bff"/>
+
+  <rect x="40" y="82" width="120" height="8" rx="4" fill="#0d1a33" stroke="#2f7bff" stroke-width="1.2"/>
+  <rect class="cwn-glow" x="40" y="82" width="120" height="8" rx="4" fill="#2f7bff"/>
+  <circle class="cwn-glow" cx="150" cy="86" r="1.6" fill="#9db8ff"/>
+
+  <g class="cwn-charge">
+   <circle class="cwn-ring" cx="100" cy="84" r="6"/>
+   <circle class="cwn-ring" cx="100" cy="84" r="6" style="animation-delay:.8s"/>
+  </g>
+
+  <text class="cwn-lbl cwn-l1" x="100" y="14">ALIGNING</text>
+  <text class="cwn-lbl cwn-l2" x="100" y="14">CHARGING</text>
+
+  <g class="cwn-phone"><g transform="translate(100 50)">
+   <rect x="-18" y="-28" width="36" height="56" rx="7" fill="#080c14" stroke="#9db8ff" stroke-width="1.5"/>
+   <rect x="-14" y="-22" width="28" height="44" rx="3" fill="#0d1a33"/>
+   <circle cx="0" cy="-16" r="1.2" fill="#2a3550"/>
+   <rect x="-10" y="-3" width="20" height="6" rx="2" fill="none" stroke="#2a3550" stroke-width="1"/>
+   <rect class="cwn-bat" x="-9" y="-2" width="18" height="4" rx="1.5" fill="#2f7bff"/>
+  </g></g>
+
+  <g class="cwn-charge">
+   <circle r="1.4" fill="#9db8ff">
+    <animateMotion dur="1.2s" repeatCount="indefinite" path="M100 84V56"/>
+    <animate attributeName="opacity" values="0;1;1;0" dur="1.2s" repeatCount="indefinite"/>
+   </circle>
+   <circle r="1.4" fill="#9db8ff">
+    <animateMotion dur="1.2s" begin="-0.6s" repeatCount="indefinite" path="M94 84V56"/>
+    <animate attributeName="opacity" values="0;1;1;0" dur="1.2s" begin="-0.6s" repeatCount="indefinite"/>
+   </circle>
+   <circle r="1.4" fill="#9db8ff">
+    <animateMotion dur="1.2s" begin="-0.3s" repeatCount="indefinite" path="M106 84V56"/>
+    <animate attributeName="opacity" values="0;1;1;0" dur="1.2s" begin="-0.3s" repeatCount="indefinite"/>
+   </circle>
+  </g>
+ </svg>`,
+
+ /* 3 Swarm drone: canvas animation (filled in by drone()) */
+ '<canvas class="dr vz"></canvas>'];
+
+/* Swarm drone: 메인 드론이 타깃을 추적하고, LOCK 박스가 타깃을 계속 따라감 */
+function drone(cv){
+  const x=cv.getContext('2d'),w=cv.width=cv.offsetWidth*2||400,h=cv.height=cv.offsetHeight*2||260,u=h*.1;
+  const OFF=[[-1.6,-1.2],[1.6,-1.2],[-.9,-2.3],[.9,-2.3]];
+  const M=[w/2,h*.2],S=Array.from({length:4},()=>[Math.random()*w,Math.random()*h*.5]);
+  const trail=[];let box=null;
+  const rot=(p,r,a)=>{x.beginPath();x.arc(p[0],p[1],r,0,6.283);x.fill();
+    x.strokeStyle=a;x.lineWidth=2;x.beginPath();x.moveTo(p[0]-r*1.9,p[1]);x.lineTo(p[0]+r*1.9,p[1]);x.stroke();};
+  (function f(){
+    if(!cv.isConnected)return;
+    const t=performance.now()/1000;
+    const T=[w/2+Math.sin(t*.7)*w*.3,h*.78];
+    /* 검출값: 타깃 위치에 약간의 떨림을 더한 측정치 */
+    const det=[T[0]+Math.sin(t*17)*u*.05,T[1]+Math.cos(t*13)*u*.04];
+    if(!box)box=[T[0],T[1]];
+    /* 추적 박스: 검출값을 지연 있게 따라감 (지수 평활) */
+    box[0]+=(det[0]-box[0])*.1;box[1]+=(det[1]-box[1])*.1;
+    trail.push([box[0],box[1]]);if(trail.length>36)trail.shift();
+    const bw=u*1.1,bh=u*.8;
+    M[0]+=(w/2+(box[0]-w/2)*.45-M[0])*.05;M[1]+=(h*.2+Math.sin(t*1.1)*h*.015-M[1])*.05;
+    S.forEach((p,i)=>{p[0]+=(box[0]+OFF[i][0]*u-p[0])*.045;p[1]+=(box[1]+OFF[i][1]*u+Math.sin(t*2+i)*h*.01-p[1])*.045;});
+
+    x.clearRect(0,0,w,h);
+    x.strokeStyle='#121a2b';x.lineWidth=1.5;x.beginPath();x.moveTo(0,h*.88);x.lineTo(w,h*.88);x.stroke();
+
+    /* 추적 궤적 */
+    trail.forEach((q,i)=>{const k=i/trail.length;x.fillStyle=`rgba(47,123,255,${k*.5})`;x.beginPath();x.arc(q[0],q[1],1+u*.05*k,0,6.283);x.fill();});
+
+    /* 카메라 시야 */
+    x.fillStyle='rgba(47,123,255,.10)';x.beginPath();x.moveTo(M[0],M[1]);x.lineTo(box[0]-bw*.5,box[1]+bh*.5);x.lineTo(box[0]+bw*.5,box[1]+bh*.5);x.closePath();x.fill();
+
+    /* 데이터 링크 */
+    x.setLineDash([6,6]);x.strokeStyle='rgba(157,184,255,.45)';x.lineWidth=1.5;
+    x.beginPath();x.moveTo(M[0],M[1]);x.lineTo(box[0],box[1]);x.stroke();
+    S.forEach(p=>{x.beginPath();x.moveTo(M[0],M[1]);x.lineTo(p[0],p[1]);x.stroke();});
+    x.setLineDash([]);
+
+    /* 타깃 물체 */
+    x.fillStyle='#1b3a73';x.fillRect(T[0]-u*.22,T[1]-u*.1,u*.44,u*.2);
+
+    /* 검출 박스 (점선, 떨림) */
+    x.setLineDash([4,4]);x.strokeStyle='rgba(157,184,255,.35)';x.lineWidth=1.5;
+    x.strokeRect(det[0]-bw/2,det[1]-bh/2,bw,bh);x.setLineDash([]);
+
+    /* 추적 박스 (코너 브라켓, 실선) */
+    const bx=box[0]-bw/2,by=box[1]-bh/2,c=u*.2;
+    x.strokeStyle='#2f7bff';x.lineWidth=2.5;
+    [[bx,by,1,1],[bx+bw,by,-1,1],[bx,by+bh,1,-1],[bx+bw,by+bh,-1,-1]].forEach(([px,py,sx,sy])=>{
+      x.beginPath();x.moveTo(px,py+sy*c);x.lineTo(px,py);x.lineTo(px+sx*c,py);x.stroke();});
+    x.font='600 '+Math.round(u*.22)+'px sans-serif';x.fillStyle='#9db8ff';x.textAlign='left';
+    x.fillText('LOCK 01',bx,by-u*.12);
+
+    /* 드론 */
+    x.fillStyle='#9db8ff';S.forEach(p=>rot(p,u*.16,'rgba(157,184,255,.6)'));
+    x.fillStyle='#fff';rot(M,u*.26,'rgba(255,255,255,.7)');
+    x.fillStyle='#2f7bff';x.beginPath();x.arc(M[0],M[1]+u*.05,u*.11,0,6.283);x.fill();
+    x.font='600 '+Math.round(u*.3)+'px sans-serif';x.fillStyle='#566077';x.textAlign='center';
+    x.fillText('MAIN · CAM',M[0],M[1]-u*.55);
+    requestAnimationFrame(f);
+  })();
+}
+
+const l2=document.getElementById('l2'),p2=document.getElementById('p2');let curP=-1,curIdx=0;
+function renderProjList(){
+  l2.innerHTML=PR.map((p,i)=>`<li data-i="${i}" tabindex="0">${pt(p)}<small>0${i+1}</small></li>`).join('');
+}
+function showPr(i){if(i===curP)return;curP=i;curIdx=i;const p=PR[i];l2.querySelectorAll('li').forEach((li,k)=>li.classList.toggle('on',k===i));
+  p2.innerHTML=`<div class="v">${VZ[i]}</div><h3>${pt(p)}</h3><p>${pd(p)}</p>${p.more?`<p>${p.more}</p>`:''}<div class="tags">${p.tg.map(x=>`<span class="tag">${x}</span>`).join('')}</div>${p.href&&p.href!=='#'?`<a class="more" href="${p.href}" target="_blank" rel="noopener">${t('open')}</a>`:''}`;
+  p2.querySelectorAll('canvas.dr').forEach(drone);}
+['mouseover','click','focusin'].forEach(ev=>l2.addEventListener(ev,e=>{const li=e.target.closest('li');if(li)showPr(+li.dataset.i);}));
+renderProjList();
+showPr(0);
+
+/* ---------- 초기 렌더링: 내장 글 목록을 먼저 그리고, RSS 결과가 오면 갱신 ---------- */
+applyStatic();
+renderChips();
+renderPosts(true);
+</script>
+</body>
+</html>
