@@ -162,36 +162,35 @@ a:focus-visible,button:focus-visible,.cf:focus-visible{outline:2px solid var(--b
 @keyframes gb{0%{transform:scaleY(0)}25%,85%{transform:scaleY(1)}100%{transform:scaleY(1);opacity:0}}
 .tx{font-family:var(--body);font-size:5.5px;letter-spacing:.12em;fill:#566077}
 .tv{font-family:var(--body);font-size:8px;font-weight:600;fill:#9db8ff}
-/* Index/ETF DCA Signal: buy markers + average cost line */
-.pop{transform-box:fill-box;transform-origin:50% 100%;opacity:0;animation:pp 4s ease-out infinite;animation-delay:calc(.5s + var(--i)*.55s)}
-@keyframes pp{0%{transform:scale(0);opacity:0}8%{transform:scale(1.5);opacity:1}14%,80%{transform:scale(1);opacity:1}100%{opacity:0}}
-.avg{stroke-dasharray:3 3;animation:av 4s ease-in-out infinite}
-@keyframes av{0%,30%{opacity:0}50%,85%{opacity:.7}100%{opacity:0}}
 
-/* Wireless charger: device drops onto pad, bolt lights up, energy flows into the device */
-.dev{transform-box:fill-box;transform-origin:50% 100%;animation:dev 4.2s cubic-bezier(.2,.8,.2,1) infinite}
-@keyframes dev{
- 0%{transform:translateY(-30px);opacity:0}
- 8%{transform:translateY(-30px);opacity:1}
- 30%{transform:translateY(3px);opacity:1;animation-timing-function:ease-in}
- 36%{transform:translateY(-1px);opacity:1}
- 40%,88%{transform:none;opacity:1}
- 100%{transform:none;opacity:0}}
-.zap{fill:#2a3550;animation:zap 4.2s ease-in-out infinite}
-@keyframes zap{
- 0%,38%{fill:#2a3550;filter:none}
- 44%,86%{fill:#2f7bff;filter:drop-shadow(0 0 3px #2f7bff) drop-shadow(0 0 8px rgba(47,123,255,.8))}
- 100%{fill:#2a3550;filter:none}}
-.pgl{opacity:0;animation:pgl 4.2s ease-in-out infinite}
-@keyframes pgl{0%,40%{opacity:0}46%,86%{opacity:.6}100%{opacity:0}}
-.flow{fill:#9db8ff;opacity:0;animation:flow 4.2s linear infinite}
-@keyframes flow{
- 0%,43%{transform:translateY(0);opacity:0}
- 46%{opacity:1}
- 84%{transform:translateY(-26px);opacity:1}
- 88%,100%{transform:translateY(-26px);opacity:0}}
-.flow.f2{animation-delay:-.35s}
-.flow.f3{animation-delay:-.7s}
+/* Index/ETF DCA Signal: 한 번 그려지고 유지되는 가격선 + 순차 등장 마커 */
+.ix-area{opacity:0;animation:ixfade .8s 1.8s forwards}
+.ix-line{fill:none;stroke:var(--blue);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1;stroke-dashoffset:1;animation:ixdraw 2.2s cubic-bezier(.4,0,.2,1) forwards}
+@keyframes ixdraw{to{stroke-dashoffset:0}}
+@keyframes ixfade{to{opacity:1}}
+.ix-mk{transform-box:fill-box;transform-origin:center;transform:scale(0);opacity:0;animation:ixpop .45s cubic-bezier(.3,1.6,.5,1) forwards;animation-delay:calc(2s + var(--i)*.35s)}
+@keyframes ixpop{to{transform:scale(1);opacity:1}}
+.ix-avg{fill:none;stroke:#9db8ff;stroke-width:1.2;stroke-dasharray:3 3;opacity:0;animation:ixfade .8s 3.2s forwards}
+
+/* Wireless charger: 플러그가 꽂히고, 충격 링과 플래시, 배터리 충전 */
+.cp-plug{transform:translateY(-60px);opacity:0;animation:cpPlug 3.6s infinite}
+@keyframes cpPlug{
+ 0%{transform:translateY(-60px);opacity:0}
+ 6%{transform:translateY(-60px);opacity:1;animation-timing-function:cubic-bezier(.55,0,1,.45)}
+ 24%{transform:translateY(12px);opacity:1}
+ 62%{transform:translateY(12px);opacity:1;animation-timing-function:cubic-bezier(.4,0,.8,.6)}
+ 80%{transform:translateY(-60px);opacity:1}
+ 84%,100%{transform:translateY(-60px);opacity:0}}
+.cp-dev{transform-box:fill-box;transform-origin:50% 0;animation:cpSquash 3.6s infinite}
+@keyframes cpSquash{0%,24%{transform:scaleY(1)}26%{transform:scaleY(.93)}31%{transform:scaleY(1.02)}35%,100%{transform:scaleY(1)}}
+.cp-ring{fill:none;stroke:#2f7bff;stroke-width:1.5;transform-box:fill-box;transform-origin:center;opacity:0;animation:cpRing 3.6s infinite}
+@keyframes cpRing{0%,23%{transform:scale(.2);opacity:0}25%{transform:scale(.5);opacity:1}40%{transform:scale(2.4);opacity:0}100%{transform:scale(2.4);opacity:0}}
+.cp-flash{opacity:0;animation:cpFlash 3.6s infinite}
+@keyframes cpFlash{0%,24%{opacity:0}26%{opacity:.35}38%,100%{opacity:0}}
+.cp-bat{transform-box:fill-box;transform-origin:0 50%;transform:scaleX(0);animation:cpBat 3.6s infinite}
+@keyframes cpBat{0%,36%{transform:scaleX(0)}62%{transform:scaleX(1)}90%{transform:scaleX(1)}96%,100%{transform:scaleX(0)}}
+.cp-padglow{opacity:0;animation:cpPad 3.6s infinite}
+@keyframes cpPad{0%,30%{opacity:0}40%,70%{opacity:.6}85%,100%{opacity:0}}
 
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}html{scroll-behavior:auto}}
 </style>
@@ -620,7 +619,7 @@ const PR=[
  tg:['Capstone','Hardware']}];
 const CH="M0 78 C30 78 40 34 70 44 S110 84 140 54 S180 22 200 30",GR='<path class="gl" d="M0 25H200M0 50H200M0 75H200"/>';
 const VZ=[
- /* 0 AI Running Coach: weekly mileage + pace trend + live heart rate */
+ /* 0 AI Running Coach */
  `<svg class="vz" viewBox="0 0 200 100" preserveAspectRatio="xMidYMid meet">${GR}
   <text class="tx" x="8" y="10">WEEKLY KM</text>
   ${[18,30,24,40,34,52,44].map((h,i)=>`<rect class="bb" style="--i:${i}" x="${8+i*12}" y="${88-h}" width="8" height="${h}" rx="2" fill="${i===5?'#2f7bff':'#1b3a73'}"/>`).join('')}
@@ -630,57 +629,103 @@ const VZ=[
   <text class="tx" x="100" y="64">HEART RATE</text><text class="tv" x="192" y="64" text-anchor="end">152 bpm</text>
   <path class="ln" pathLength="1" style="animation-duration:2.4s" d="M100 80H116l3-3 3 3H128l3-14 4 26 3-12H146l3-5 3 5H168l3-14 4 26 3-12H192"/>
  </svg>`,
- /* 1 Index & ETF DCA Signal: price line, buy markers on dips, average cost line */
- `<svg class="vz" viewBox="0 0 200 100" preserveAspectRatio="xMidYMid meet">${GR}
-  <text class="tx" x="6" y="10">PRICE</text><text class="tx" x="194" y="94" text-anchor="end">AVG COST</text>
-  <path class="ln" pathLength="1" d="M0 60L20 52L40 66L60 48L80 72L100 58L120 78L140 56L160 44L180 52L200 34"/>
-  <path class="avg" d="M40 72H200" stroke="#9db8ff" stroke-width="1.5" fill="none"/>
-  ${[[40,66],[80,72],[120,78]].map((p,i)=>`<g class="pop" style="--i:${i}"><path d="M${p[0]} ${p[1]+3}V${p[1]+12}" stroke="#2f7bff" stroke-width="1.5"/><circle cx="${p[0]}" cy="${p[1]}" r="3.5" fill="#2f7bff"/><text class="tv" x="${p[0]}" y="${p[1]+20}" text-anchor="middle" style="font-size:6px">BUY</text></g>`).join('')}
- </svg>`,
- /* 2 Wireless Charging Pad: device drops onto the pad, bolt lights up, energy flows into the device */
+
+ /* 1 Index & ETF DCA Signal: 가격선이 한 번 그려지고 유지, 매수 마커는 순차 등장 */
  `<svg class="vz" viewBox="0 0 200 100" preserveAspectRatio="xMidYMid meet">
-  <rect x="30" y="80" width="140" height="10" rx="5" fill="#0d1a33" stroke="#2f7bff" stroke-width="1.5"/>
-  <rect class="pgl" x="30" y="80" width="140" height="10" rx="5" fill="#2f7bff"/>
-  <g class="dev">
-   <rect x="76" y="40" width="48" height="34" rx="8" fill="#080c14" stroke="#9db8ff" stroke-width="1.5"/>
-   <path class="zap" d="M106 46L splitter"/>
-  </g>
-  <circle class="flow" cx="92" cy="76" r="1.6"/>
-  <circle class="flow f2" cx="100" cy="76" r="1.6"/>
-  <circle class="flow f3" cx="108" cy="76" r="1.6"/>
+  <defs><linearGradient id="ixg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2f7bff" stop-opacity=".22"/><stop offset="1" stop-color="#2f7bff" stop-opacity="0"/></linearGradient></defs>
+  ${GR}
+  <text class="tx" x="6" y="10">PRICE</text><text class="tx" x="194" y="10" text-anchor="end">AVG COST</text>
+  <path class="ix-area" d="M0 62 C15 58 25 48 40 54 S60 74 80 66 S100 50 120 56 S140 80 160 62 S185 30 200 36 V100 H0Z" fill="url(#ixg)"/>
+  <path class="ix-avg" d="M40 60H200"/>
+  <path class="ix-line" pathLength="1" d="M0 62 C15 58 25 48 40 54 S60 74 80 66 S100 50 120 56 S140 80 160 62 S185 30 200 36"/>
+  <circle r="6" fill="#2f7bff" opacity=".25"><animateMotion dur="5s" begin="2.2s" repeatCount="indefinite" path="M0 62 C15 58 25 48 40 54 S60 74 80 66 S100 50 120 56 S140 80 160 62 S185 30 200 36"/></circle>
+  <circle r="2.5" fill="#9db8ff"><animateMotion dur="5s" begin="2.2s" repeatCount="indefinite" path="M0 62 C15 58 25 48 40 54 S60 74 80 66 S100 50 120 56 S140 80 160 62 S185 30 200 36"/></circle>
+  ${[[40,54],[80,66],[120,56]].map((p,i)=>`<g class="ix-mk" style="--i:${i}"><circle cx="${p[0]}" cy="${p[1]}" r="3.5" fill="#2f7bff" stroke="#000" stroke-width="1.5"/><text class="tv" x="${p[0]}" y="${p[1]+14}" text-anchor="middle" style="font-size:6px">BUY</text></g>`).join('')}
  </svg>`,
+
+ /* 2 Wireless Charging Pad: 플러그가 꽂히고 충격 후 배터리 충전 */
+ `<svg class="vz" viewBox="0 0 200 100" preserveAspectRatio="xMidYMid meet">
+  <rect x="50" y="86" width="100" height="8" rx="4" fill="#0d1a33" stroke="#2f7bff" stroke-width="1.5"/>
+  <rect class="cp-padglow" x="50" y="86" width="100" height="8" rx="4" fill="#2f7bff"/>
+  <g class="cp-plug">
+   <rect x="92" y="2" width="16" height="12" rx="3" fill="#1b3a73" stroke="#9db8ff" stroke-width="1.2"/>
+   <rect x="95" y="14" width="10" height="10" rx="2" fill="#9db8ff"/>
+  </g>
+  <g class="cp-dev">
+   <rect x="70" y="36" width="60" height="48" rx="10" fill="#080c14" stroke="#9db8ff" stroke-width="1.5"/>
+   <rect x="96" y="37" width="8" height="3" rx="1.5" fill="#2a3550"/>
+   <rect x="80" y="58" width="40" height="8" rx="3" fill="none" stroke="#2a3550" stroke-width="1"/>
+   <rect class="cp-bat" x="81.5" y="59.5" width="37" height="5" rx="2" fill="#2f7bff"/>
+  </g>
+  <rect class="cp-flash" x="70" y="36" width="60" height="48" rx="10" fill="#2f7bff"/>
+  <circle class="cp-ring" cx="100" cy="36" r="8"/>
+ </svg>`,
+
  /* 3 Swarm drone: canvas animation (filled in by drone()) */
  '<canvas class="dr vz"></canvas>'];
-/* Swarm drone: main drone tracks a target with its camera, sub drones follow the target */
-function drone(cv){const x=cv.getContext('2d'),w=cv.width=cv.offsetWidth*2||400,h=cv.height=cv.offsetHeight*2||260,N=4,u=h*.1;
+
+/* Swarm drone: 메인 드론이 타깃을 추적하고, LOCK 박스가 타깃을 계속 따라감 */
+function drone(cv){
+  const x=cv.getContext('2d'),w=cv.width=cv.offsetWidth*2||400,h=cv.height=cv.offsetHeight*2||260,u=h*.1;
   const OFF=[[-1.6,-1.2],[1.6,-1.2],[-.9,-2.3],[.9,-2.3]];
-  const M=[w/2,h*.2],S=Array.from({length:N},()=>[Math.random()*w,Math.random()*h*.5]);
+  const M=[w/2,h*.2],S=Array.from({length:4},()=>[Math.random()*w,Math.random()*h*.5]);
+  const trail=[];let box=null;
   const rot=(p,r,a)=>{x.beginPath();x.arc(p[0],p[1],r,0,6.283);x.fill();
     x.strokeStyle=a;x.lineWidth=2;x.beginPath();x.moveTo(p[0]-r*1.9,p[1]);x.lineTo(p[0]+r*1.9,p[1]);x.stroke();};
-  (function f(){if(!cv.isConnected)return;const t=performance.now()/1000;
-    const T=[w/2+Math.sin(t*.7)*w*.3,h*.8+Math.sin(t*1.4)*h*.03];
-    M[0]+=(w/2+(T[0]-w/2)*.45-M[0])*.05;M[1]+=(h*.2+Math.sin(t*1.1)*h*.015-M[1])*.05;
-    S.forEach((p,i)=>{p[0]+=(T[0]+OFF[i][0]*u-p[0])*.045;p[1]+=(T[1]+OFF[i][1]*u+Math.sin(t*2+i)*h*.01-p[1])*.045;});
+  (function f(){
+    if(!cv.isConnected)return;
+    const t=performance.now()/1000;
+    const T=[w/2+Math.sin(t*.7)*w*.3,h*.78];
+    /* 검출값: 타깃 위치에 약간의 떨림을 더한 측정치 */
+    const det=[T[0]+Math.sin(t*17)*u*.05,T[1]+Math.cos(t*13)*u*.04];
+    if(!box)box=[T[0],T[1]];
+    /* 추적 박스: 검출값을 지연 있게 따라감 (지수 평활) */
+    box[0]+=(det[0]-box[0])*.1;box[1]+=(det[1]-box[1])*.1;
+    trail.push([box[0],box[1]]);if(trail.length>36)trail.shift();
+    const bw=u*1.1,bh=u*.8;
+    M[0]+=(w/2+(box[0]-w/2)*.45-M[0])*.05;M[1]+=(h*.2+Math.sin(t*1.1)*h*.015-M[1])*.05;
+    S.forEach((p,i)=>{p[0]+=(box[0]+OFF[i][0]*u-p[0])*.045;p[1]+=(box[1]+OFF[i][1]*u+Math.sin(t*2+i)*h*.01-p[1])*.045;});
+
     x.clearRect(0,0,w,h);
     x.strokeStyle='#121a2b';x.lineWidth=1.5;x.beginPath();x.moveTo(0,h*.88);x.lineTo(w,h*.88);x.stroke();
-    /* camera field of view from the main drone to the target */
-    x.fillStyle='rgba(47,123,255,.10)';x.beginPath();x.moveTo(M[0],M[1]);x.lineTo(T[0]-u*.8,T[1]);x.lineTo(T[0]+u*.8,T[1]);x.closePath();x.fill();
-    x.setLineDash([6,6]);x.strokeStyle='rgba(157,184,255,.55)';x.lineWidth=1.5;x.beginPath();x.moveTo(M[0],M[1]);x.lineTo(T[0],T[1]);x.stroke();
-    /* data link: main drone sends the target position to the sub drones */
-    x.strokeStyle='rgba(47,123,255,.3)';S.forEach(p=>{x.beginPath();x.moveTo(M[0],M[1]);x.lineTo(p[0],p[1]);x.stroke();});x.setLineDash([]);
-    /* target + tracking reticle */
-    const pl=1+((t*1.5)%1);x.strokeStyle='rgba(47,123,255,'+(1-(pl-1))*.5+')';x.lineWidth=1.5;x.beginPath();x.arc(T[0],T[1],u*.25*pl,0,6.283);x.stroke();
-    x.fillStyle='#2f7bff';x.beginPath();x.arc(T[0],T[1],u*.2,0,6.283);x.fill();
-    const r=u*.55,c=u*.22;x.strokeStyle='#9db8ff';x.lineWidth=2;
-    [[-1,-1],[1,-1],[-1,1],[1,1]].forEach(q=>{x.beginPath();x.moveTo(T[0]+q[0]*r,T[1]+q[1]*(r-c));x.lineTo(T[0]+q[0]*r,T[1]+q[1]*r);x.lineTo(T[0]+q[0]*(r-c),T[1]+q[1]*r);x.stroke();});
-    /* sub drones */
+
+    /* 추적 궤적 */
+    trail.forEach((q,i)=>{const k=i/trail.length;x.fillStyle=`rgba(47,123,255,${k*.5})`;x.beginPath();x.arc(q[0],q[1],1+u*.05*k,0,6.283);x.fill();});
+
+    /* 카메라 시야 */
+    x.fillStyle='rgba(47,123,255,.10)';x.beginPath();x.moveTo(M[0],M[1]);x.lineTo(box[0]-bw*.5,box[1]+bh*.5);x.lineTo(box[0]+bw*.5,box[1]+bh*.5);x.closePath();x.fill();
+
+    /* 데이터 링크 */
+    x.setLineDash([6,6]);x.strokeStyle='rgba(157,184,255,.45)';x.lineWidth=1.5;
+    x.beginPath();x.moveTo(M[0],M[1]);x.lineTo(box[0],box[1]);x.stroke();
+    S.forEach(p=>{x.beginPath();x.moveTo(M[0],M[1]);x.lineTo(p[0],p[1]);x.stroke();});
+    x.setLineDash([]);
+
+    /* 타깃 물체 */
+    x.fillStyle='#1b3a73';x.fillRect(T[0]-u*.22,T[1]-u*.1,u*.44,u*.2);
+
+    /* 검출 박스 (점선, 떨림) */
+    x.setLineDash([4,4]);x.strokeStyle='rgba(157,184,255,.35)';x.lineWidth=1.5;
+    x.strokeRect(det[0]-bw/2,det[1]-bh/2,bw,bh);x.setLineDash([]);
+
+    /* 추적 박스 (코너 브라켓, 실선) */
+    const bx=box[0]-bw/2,by=box[1]-bh/2,c=u*.2;
+    x.strokeStyle='#2f7bff';x.lineWidth=2.5;
+    [[bx,by,1,1],[bx+bw,by,-1,1],[bx,by+bh,1,-1],[bx+bw,by+bh,-1,-1]].forEach(([px,py,sx,sy])=>{
+      x.beginPath();x.moveTo(px,py+sy*c);x.lineTo(px,py);x.lineTo(px+sx*c,py);x.stroke();});
+    x.font='600 '+Math.round(u*.22)+'px sans-serif';x.fillStyle='#9db8ff';x.textAlign='left';
+    x.fillText('LOCK 01',bx,by-u*.12);
+
+    /* 드론 */
     x.fillStyle='#9db8ff';S.forEach(p=>rot(p,u*.16,'rgba(157,184,255,.6)'));
-    /* main drone with camera */
     x.fillStyle='#fff';rot(M,u*.26,'rgba(255,255,255,.7)');
     x.fillStyle='#2f7bff';x.beginPath();x.arc(M[0],M[1]+u*.05,u*.11,0,6.283);x.fill();
     x.font='600 '+Math.round(u*.3)+'px sans-serif';x.fillStyle='#566077';x.textAlign='center';
-    x.fillText('MAIN · CAM',M[0],M[1]-u*.55);x.fillText('TARGET',T[0],T[1]+u*1.15);
-    requestAnimationFrame(f);})();}
+    x.fillText('MAIN · CAM',M[0],M[1]-u*.55);
+    requestAnimationFrame(f);
+  })();
+}
+
 const l2=document.getElementById('l2'),p2=document.getElementById('p2');let curP=-1,curIdx=0;
 function renderProjList(){
   l2.innerHTML=PR.map((p,i)=>`<li data-i="${i}" tabindex="0">${pt(p)}<small>0${i+1}</small></li>`).join('');
