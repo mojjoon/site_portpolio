@@ -580,19 +580,15 @@ const PR=[
  d:'Fuses eight primary indicators (moving-average deviation, RSI, MACD, Bollinger %B, VIX slope, yield spread) with secondary signals into a weighted score. A GARCH(1,1) volatility regime sets entry thresholds and drives periodic DCA buys into index and ETF instruments.',
  kd:'8개 핵심 지표(이평선 괴리, RSI, MACD, 볼린저 %B, VIX 기울기, 금리 스프레드)와 2차 지표를 가중 결합해 점수를 산출합니다. GARCH(1,1)로 변동성 국면을 추정해 임계값을 조정하고, 지수·ETF 정액 적립(DCA) 매수 타이밍을 결정합니다.',
  tg:['HTML/JS','Index / ETF']},
-{t:'Magnetic Wireless Charging Adapter',kt:'자석 부착형 무선충전 어댑터',href:'#',more:'',
- d:'A wide wireless charging pad powers a magnetic adapter placed on top of it. The adapter snaps onto the pad and receives power through a Qi-style inductive link, then feeds any device plugged into its outlet, so you can use a phone while it charges.',
- kd:'넓은 무선충전 패드 위에 충전 어댑터를 올려놓으면 자석으로 패드에 붙으면서 전기가 들어옵니다. 어댑터는 유도 결합(Qi 방식)으로 전력을 받고, 그 어댑터의 콘센트에 플러그를 꽂으면 폰 같은 전자기기를 충전하면서 바로 사용할 수 있습니다.',
+{t:'Wireless Charging Pad with Outlets',kt:'콘센트 일체형 무선충전 패드',href:'#',more:'',
+ d:'A detachable outlet adapter that couples to a Qi wireless charging pad. I tuned the transmitter and receiver coils into a resonant LC pair for power transfer, and extended the inductive link into an AC outlet for auxiliary loads.',
+ kd:'Qi 무선충전 패드에 결합하는 탈부착형 콘센트 어댑터입니다. 송신 코일과 수신 코일을 공진 LC 쌍으로 맞춰 전력을 전달하고, 유도 결합을 보조 부하용 AC 콘센트 인터페이스로 확장했습니다.',
  tg:['Hardware','Power']},
 {t:'Swarm Drone Control System',kt:'군집 드론 제어 시스템',href:'#',more:'',
  d:'A swarm system built on a dual-link architecture. The main drone performs camera-based visual tracking of a ground target and streams the estimated target position to the ground control pad over Wi-Fi. Sub-drones receive that estimate from the main drone over an nRF24L01 2.4 GHz link and hold formation around the target. The visual tracking pipeline is the core of the project, supported by system architecture, flight control, and hardware integration.',
  kd:'군집 드론 시스템으로, 두 가지 무선 통신 구조로 이루어져 있습니다. 메인 드론이 탑재 카메라로 지상 타깃을 영상 기반으로 추적해 타깃 위치를 추정하는 것이 핵심이며, 추정 결과는 메인 패드와 메인 드론 사이 Wi-Fi 통신으로 전달됩니다. 메인 드론과 서브 드론은 nRF24L01(2.4GHz) 무선 모듈로 통신하며, 서브 드론들은 전달받은 타깃 위치를 기준으로 편대를 유지합니다. 시스템 아키텍처, 비행 제어기, 하드웨어 통합은 이 트래킹 파이프라인을 뒷받침하는 작업이었습니다.',
  tg:['Capstone','Hardware']}];
 const CH="M0 78 C30 78 40 34 70 44 S110 84 140 54 S180 22 200 30",GR='<path class="gl" d="M0 25H200M0 50H200M0 75H200"/>';
-
-/* 지수 차트: 한 주기가 자연스럽게 이어지는 곡선 (Catmull-Rom 방식으로 계산). 끝점과 시작점의 높이가 같아 무한 반복해도 이음새가 보이지 않음 */
-const IXD="M0 60C8.33 55.83 16.67 40.83 25 40C33.33 39.17 41.67 50 50 55C58.33 60 66.67 71.17 75 70C83.33 68.83 91.67 54.67 100 48C108.33 41.33 116.67 29.67 125 30C133.33 30.33 141.67 44.17 150 50C158.33 55.83 166.67 63.33 175 65C183.33 63.33 191.67 64.17 200 60";
-
 const VZ=[
  /* 0 AI Running Coach */
  `<svg class="vz" viewBox="0 0 200 100" preserveAspectRatio="xMidYMid meet">${GR}
@@ -605,111 +601,110 @@ const VZ=[
   <path class="ln" pathLength="1" style="animation-duration:2.4s" d="M100 80H116l3-3 3 3H128l3-14 4 26 3-12H146l3-5 3 5H168l3-14 4 26 3-12H192"/>
  </svg>`,
 
- /* 1 Index & ETF DCA Signal: 끊김 없이 왼쪽으로 흐르는 가격선 + 평균단가선 */
+ /* 1 Index & ETF DCA Signal: 출렁이는 가격선 + 저점마다 적립 매수 + 평균단가선 */
  `<svg class="vz" viewBox="0 0 200 100" preserveAspectRatio="xMidYMid meet">
   <style>
-   .ixn-scroll{animation:ixnScroll 5s linear infinite}
-   @keyframes ixnScroll{from{transform:translateX(0)}to{transform:translateX(-200px)}}
+   .ixn-line{fill:none;stroke:#2f7bff;stroke-width:2;stroke-linejoin:round;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:1;animation:ixnDraw 8s linear infinite}
+   @keyframes ixnDraw{0%{stroke-dashoffset:1;opacity:1}40%{stroke-dashoffset:0;opacity:1}90%{stroke-dashoffset:0;opacity:1}96%,100%{stroke-dashoffset:0;opacity:0}}
+   .ixn-area{opacity:0;animation:ixnFade 8s linear infinite}
+   @keyframes ixnFade{0%{opacity:0}40%{opacity:1}90%{opacity:1}96%,100%{opacity:0}}
+   .ixn-mk{opacity:0;transform-box:fill-box;transform-origin:center;animation:ixnPop 8s infinite}
+   @keyframes ixnPop{0%{opacity:0;transform:scale(0)}4%{opacity:1;transform:scale(1.4)}7%{transform:scale(1)}90%{opacity:1;transform:scale(1)}96%,100%{opacity:0;transform:scale(.6)}}
+   .ixn-avg{opacity:0;animation:ixnAvg 8s infinite}
+   @keyframes ixnAvg{0%{opacity:0}4%,90%{opacity:.9}96%,100%{opacity:0}}
    .ixn-tx{font-family:var(--body);font-size:5.5px;letter-spacing:.12em;fill:#566077}
    .ixn-buy{font-family:var(--body);font-size:5.5px;font-weight:600;fill:#9db8ff;text-anchor:middle}
   </style>
   <defs>
    <linearGradient id="ixng" x1="0" y1="0" x2="0" y2="1">
-    <stop offset="0" stop-color="#2f7bff" stop-opacity=".28"/>
+    <stop offset="0" stop-color="#2f7bff" stop-opacity=".25"/>
     <stop offset="1" stop-color="#2f7bff" stop-opacity="0"/>
    </linearGradient>
-   <g id="ixc">
-    <path d="${IXD}V100H0Z" fill="url(#ixng)"/>
-    <path d="${IXD}" fill="none" stroke="#2f7bff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-    <circle cx="75" cy="70" r="3" fill="#2f7bff" stroke="#000" stroke-width="1.2"/>
-    <text class="ixn-buy" x="75" y="83">BUY</text>
-    <circle cx="175" cy="65" r="3" fill="#2f7bff" stroke="#000" stroke-width="1.2"/>
-    <text class="ixn-buy" x="175" y="78">BUY</text>
-   </g>
   </defs>
-  <path d="M0 58H200" stroke="#9db8ff" stroke-width="1" stroke-dasharray="3 3" opacity=".6" fill="none"/>
-  <text class="ixn-tx" x="198" y="54" text-anchor="end">AVG COST</text>
-  <g class="ixn-scroll"><use href="#ixc"/><use href="#ixc" x="200"/></g>
+  <path d="M0 25H200M0 50H200M0 75H200" stroke="#121a2b" stroke-width="1" fill="none"/>
+  <path class="ixn-area" d="M0 62L12 50L22 60L34 40L46 54L58 68L70 56L82 76L94 64L106 84L118 66L130 46L142 60L154 38L166 52L178 32L190 44L200 26V100H0Z" fill="url(#ixng)"/>
+  <path class="ixn-avg" style="animation-delay:2.4s" d="M58 70H200" fill="none" stroke="#9db8ff" stroke-width="1.2" stroke-dasharray="3 3"/>
+  <text class="ixn-tx ixn-avg" style="animation-delay:2.4s" x="198" y="66" text-anchor="end">AVG COST</text>
   <text class="ixn-tx" x="6" y="10">PRICE</text>
+  <path id="ixnp" class="ixn-line" pathLength="1" d="M0 62L12 50L22 60L34 40L46 54L58 68L70 56L82 76L94 64L106 84L118 66L130 46L142 60L154 38L166 52L178 32L190 44L200 26"/>
+  <g class="ixn-mk" style="animation-delay:.93s"><circle cx="58" cy="68" r="3.2" fill="#2f7bff" stroke="#000" stroke-width="1.2"/><text class="ixn-buy" x="58" y="82">BUY</text></g>
+  <g class="ixn-mk" style="animation-delay:1.31s"><circle cx="82" cy="76" r="3.2" fill="#2f7bff" stroke="#000" stroke-width="1.2"/><text class="ixn-buy" x="82" y="90">BUY</text></g>
+  <g class="ixn-mk" style="animation-delay:1.70s"><circle cx="106" cy="84" r="3.2" fill="#2f7bff" stroke="#000" stroke-width="1.2"/><text class="ixn-buy" x="106" y="97">BUY</text></g>
+  <g class="ixn-mk" style="animation-delay:2.27s"><circle cx="142" cy="60" r="3.2" fill="#2f7bff" stroke="#000" stroke-width="1.2"/><text class="ixn-buy" x="142" y="51">BUY</text></g>
+  <circle r="2.4" fill="#9db8ff">
+   <animateMotion dur="8s" repeatCount="indefinite" keyPoints="0;1;1" keyTimes="0;0.4;1" calcMode="linear"><mpath href="#ixnp"/></animateMotion>
+   <animate attributeName="opacity" dur="8s" repeatCount="indefinite" values="0;1;1;0;0" keyTimes="0;.02;.9;.96;1"/>
+  </circle>
  </svg>`,
 
- /* 2 Magnetic Wireless Charging Adapter: 어댑터가 패드에 자석으로 붙어 충전 → 콘센트에 연결된 폰 사용 → 들어올림 → 반복 */
+ /* 2 Wireless Charging Pad: 기기가 미끄러져 정렬 → 충전 → 들려서 이동 → 반복 */
  `<svg class="vz" viewBox="0 0 200 100" preserveAspectRatio="xMidYMid meet">
   <style>
    .cwn-tx{font-family:var(--body);font-size:5.5px;letter-spacing:.12em;fill:#566077;text-anchor:middle}
    .cwn-lbl{font-family:var(--body);font-size:6px;font-weight:600;letter-spacing:.2em;fill:#9db8ff;text-anchor:middle;opacity:0}
    .cwn-l1{animation:cwnL1 9s infinite}
    .cwn-l2{animation:cwnL2 9s infinite}
-   .cwn-l3{animation:cwnL3 9s infinite}
-   @keyframes cwnL1{0%,8%{opacity:0}12%,30%{opacity:1}34%,100%{opacity:0}}
-   @keyframes cwnL2{0%,30%{opacity:0}34%,52%{opacity:1}56%,100%{opacity:0}}
-   @keyframes cwnL3{0%,54%{opacity:0}58%,86%{opacity:1}90%,100%{opacity:0}}
-   .cwn-ad{animation:cwnAd 9s cubic-bezier(.4,0,.6,1) infinite}
-   @keyframes cwnAd{
-    0%{transform:translate(100px,40px);opacity:0}
-    8%{transform:translate(100px,40px);opacity:1}
-    28%{transform:translate(100px,78px)}
-    31%{transform:translate(100px,76px)}
-    34%{transform:translate(100px,78px)}
-    88%{transform:translate(100px,78px);opacity:1}
-    95%{transform:translate(100px,40px);opacity:1}
-    100%{transform:translate(100px,40px);opacity:0}}
-   .cwn-glow{opacity:0;animation:cwnGlow 9s infinite}
-   @keyframes cwnGlow{0%,26%{opacity:0}30%,88%{opacity:.7}94%,100%{opacity:0}}
-   .cwn-ch{opacity:0;animation:cwnCh 9s infinite}
-   @keyframes cwnCh{0%,30%{opacity:0}32%,88%{opacity:1}92%,100%{opacity:0}}
-   .cwn-ring{fill:none;stroke:#2f7bff;stroke-width:1;transform-box:fill-box;transform-origin:center;animation:cwnRing 1.6s linear infinite}
-   @keyframes cwnRing{0%{transform:scale(.3);opacity:.9}100%{transform:scale(2.2);opacity:0}}
-   .cwn-cable{fill:none;stroke:#566077;stroke-width:1.6;stroke-linecap:round;stroke-dasharray:1;animation:cwnCab 9s infinite}
-   @keyframes cwnCab{0%,46%{stroke-dashoffset:1;opacity:1}56%,84%{stroke-dashoffset:0;opacity:1}88%,100%{stroke-dashoffset:0;opacity:0}}
-   .cwn-flowg{opacity:0;animation:cwnFg 9s infinite}
-   @keyframes cwnFg{0%,56%{opacity:0}58%,84%{opacity:1}88%,100%{opacity:0}}
-   .cwn-phone{opacity:0;animation:cwnPh 9s infinite}
-   @keyframes cwnPh{0%{opacity:0}6%,92%{opacity:1}97%,100%{opacity:0}}
+   @keyframes cwnL1{0%,14%{opacity:0}20%,40%{opacity:1}46%,100%{opacity:0}}
+   @keyframes cwnL2{0%,50%{opacity:0}54%,80%{opacity:1}86%,100%{opacity:0}}
+   .cwn-phone{transform-box:fill-box;transform-origin:center;animation:cwnMove 9s ease-in-out infinite}
+   @keyframes cwnMove{0%{transform:translate(-64px,-2px) rotate(-16deg);opacity:0}5%{opacity:1}16%{transform:translate(-58px,-2px) rotate(-16deg);opacity:1}30%{transform:translate(-8px,0) rotate(6deg)}38%{transform:translate(5px,-2px) rotate(-3deg)}46%,80%{transform:translate(0,0) rotate(0deg);opacity:1}88%{transform:translate(34px,-30px) rotate(20deg);opacity:1}95%,100%{transform:translate(64px,-40px) rotate(28deg);opacity:0}}
    .cwn-bat{transform-box:fill-box;transform-origin:0 50%;animation:cwnBat 9s infinite}
-   @keyframes cwnBat{0%,50%{transform:scaleX(.1)}80%,100%{transform:scaleX(1)}}
-   .cwn-led{animation:cwnLed 1.2s infinite}
-   @keyframes cwnLed{0%,100%{opacity:.3}50%{opacity:1}}
+   @keyframes cwnBat{0%,48%{transform:scaleX(.15)}60%{transform:scaleX(.45)}74%{transform:scaleX(.8)}82%,100%{transform:scaleX(1)}}
+   .cwn-glow{opacity:0;animation:cwnGlow 9s infinite}
+   @keyframes cwnGlow{0%,46%{opacity:0}52%,82%{opacity:.7}88%,100%{opacity:0}}
+   .cwn-charge{opacity:0;animation:cwnOn 9s infinite}
+   @keyframes cwnOn{0%,50%{opacity:0}52%,82%{opacity:1}88%,100%{opacity:0}}
+   .cwn-ring{fill:none;stroke:#2f7bff;stroke-width:1;transform-box:fill-box;transform-origin:center;animation:cwnRing 1.6s linear infinite}
+   @keyframes cwnRing{0%{transform:scale(.4);opacity:.9}100%{transform:scale(2.4);opacity:0}}
+   .cwn-flow{fill:none;stroke:#2f7bff;stroke-width:1.4;stroke-dasharray:3 5;animation:cwnFlow .8s linear infinite}
+   @keyframes cwnFlow{to{stroke-dashoffset:-16}}
+   .cwn-outled{animation:cwnOutLed 2s infinite}
+   @keyframes cwnOutLed{0%,100%{opacity:.3}50%{opacity:1}}
   </style>
 
-  <text class="cwn-tx" x="100" y="98">WIRELESS PAD</text>
-  <rect x="24" y="80" width="152" height="10" rx="5" fill="#0d1a33" stroke="#2f7bff" stroke-width="1.2"/>
-  <rect class="cwn-glow" x="24" y="80" width="152" height="10" rx="5" fill="#2f7bff"/>
+  <text class="cwn-tx" x="179" y="16">AC 220V</text>
+  <path d="M179 56C179 72 170 80 160 84" fill="none" stroke="#566077" stroke-width="1.4"/>
+  <g class="cwn-charge"><path class="cwn-flow" d="M179 56C179 72 170 80 160 84"/></g>
 
-  <g class="cwn-ch">
-   <circle class="cwn-ring" cx="100" cy="80" r="5"/>
-   <circle class="cwn-ring" cx="100" cy="80" r="5" style="animation-delay:.8s"/>
+  <rect x="166" y="22" width="26" height="34" rx="6" fill="#080c14" stroke="#566077" stroke-width="1.2"/>
+  <rect x="172" y="32" width="3" height="9" rx="1" fill="#566077"/>
+  <rect x="183" y="32" width="3" height="9" rx="1" fill="#566077"/>
+  <circle class="cwn-outled" cx="179" cy="48" r="1.6" fill="#2f7bff"/>
+
+  <rect x="40" y="82" width="120" height="8" rx="4" fill="#0d1a33" stroke="#2f7bff" stroke-width="1.2"/>
+  <rect class="cwn-glow" x="40" y="82" width="120" height="8" rx="4" fill="#2f7bff"/>
+  <circle class="cwn-glow" cx="150" cy="86" r="1.6" fill="#9db8ff"/>
+
+  <g class="cwn-charge">
+   <circle class="cwn-ring" cx="100" cy="84" r="6"/>
+   <circle class="cwn-ring" cx="100" cy="84" r="6" style="animation-delay:.8s"/>
   </g>
 
-  <path class="cwn-cable" pathLength="1" d="M122 65C134 65 140 62 152 62"/>
-  <g class="cwn-flowg">
+  <text class="cwn-lbl cwn-l1" x="100" y="14">ALIGNING</text>
+  <text class="cwn-lbl cwn-l2" x="100" y="14">CHARGING</text>
+
+  <g class="cwn-phone"><g transform="translate(100 50)">
+   <rect x="-18" y="-28" width="36" height="56" rx="7" fill="#080c14" stroke="#9db8ff" stroke-width="1.5"/>
+   <rect x="-14" y="-22" width="28" height="44" rx="3" fill="#0d1a33"/>
+   <circle cx="0" cy="-16" r="1.2" fill="#2a3550"/>
+   <rect x="-10" y="-3" width="20" height="6" rx="2" fill="none" stroke="#2a3550" stroke-width="1"/>
+   <rect class="cwn-bat" x="-9" y="-2" width="18" height="4" rx="1.5" fill="#2f7bff"/>
+  </g></g>
+
+  <g class="cwn-charge">
    <circle r="1.4" fill="#9db8ff">
-    <animateMotion dur="1.2s" repeatCount="indefinite" path="M122 65C134 65 140 62 152 62"/>
+    <animateMotion dur="1.2s" repeatCount="indefinite" path="M100 84V56"/>
     <animate attributeName="opacity" values="0;1;1;0" dur="1.2s" repeatCount="indefinite"/>
    </circle>
    <circle r="1.4" fill="#9db8ff">
-    <animateMotion dur="1.2s" begin="-0.6s" repeatCount="indefinite" path="M122 65C134 65 140 62 152 62"/>
+    <animateMotion dur="1.2s" begin="-0.6s" repeatCount="indefinite" path="M94 84V56"/>
     <animate attributeName="opacity" values="0;1;1;0" dur="1.2s" begin="-0.6s" repeatCount="indefinite"/>
    </circle>
+   <circle r="1.4" fill="#9db8ff">
+    <animateMotion dur="1.2s" begin="-0.3s" repeatCount="indefinite" path="M106 84V56"/>
+    <animate attributeName="opacity" values="0;1;1;0" dur="1.2s" begin="-0.3s" repeatCount="indefinite"/>
+   </circle>
   </g>
-
-  <g class="cwn-phone">
-   <rect x="152" y="44" width="24" height="36" rx="5" fill="#080c14" stroke="#9db8ff" stroke-width="1.4"/>
-   <rect x="155" y="49" width="18" height="26" rx="2" fill="#0d1a33"/>
-   <rect x="158" y="60" width="12" height="6" rx="1.5" fill="none" stroke="#566077" stroke-width="1"/>
-   <rect class="cwn-bat" x="159.5" y="61.5" width="9" height="3" rx="1" fill="#2f7bff"/>
-  </g>
-
-  <text class="cwn-lbl cwn-l1" x="100" y="9">SNAP ON</text>
-  <text class="cwn-lbl cwn-l2" x="100" y="9">CHARGING</text>
-  <text class="cwn-lbl cwn-l3" x="100" y="9">PLUG &amp; USE</text>
-
-  <g class="cwn-ad"><g>
-   <rect x="-22" y="-26" width="44" height="26" rx="7" fill="#080c14" stroke="#9db8ff" stroke-width="1.3"/>
-   <rect x="16" y="-18" width="6" height="10" rx="1.2" fill="#0d1a33" stroke="#566077" stroke-width="1"/>
-   <circle class="cwn-led" cx="-12" cy="-13" r="1.6" fill="#2f7bff"/>
-   <rect x="-14" y="0" width="28" height="2" rx="1" fill="#2f7bff"/>
-  </g></g>
  </svg>`,
 
  /* 3 Swarm drone: canvas animation (filled in by drone()) */
