@@ -700,74 +700,76 @@ const VZ=[
    <g class="ixn2-mk" style="animation-delay:2.27s"><circle cx="142" cy="60" r="3.2" fill="#2f7bff" stroke="#000" stroke-width="1.2"/><text class="ixn2-buy" x="142" y="51">BUY</text></g>
   </g>
  </svg>`,
- /* 2 Wireless Charging Pad: 기기가 미끄러져 정렬 → 충전 → 들려서 이동 → 반복 */
+  /* 2 Wireless Charging Pad: 어댑터가 패드에 올라가고, 플러그를 콘센트 구멍에 꽂아 사용 */
  `<svg class="vz" viewBox="0 0 200 100" preserveAspectRatio="xMidYMid meet">
   <style>
    .cwn-tx{font-family:var(--body);font-size:5.5px;letter-spacing:.12em;fill:#566077;text-anchor:middle}
    .cwn-lbl{font-family:var(--body);font-size:6px;font-weight:600;letter-spacing:.2em;fill:#9db8ff;text-anchor:middle;opacity:0}
    .cwn-l1{animation:cwnL1 9s infinite}
    .cwn-l2{animation:cwnL2 9s infinite}
-   @keyframes cwnL1{0%,14%{opacity:0}20%,40%{opacity:1}46%,100%{opacity:0}}
-   @keyframes cwnL2{0%,50%{opacity:0}54%,80%{opacity:1}86%,100%{opacity:0}}
-   .cwn-phone{transform-box:fill-box;transform-origin:center;animation:cwnMove 9s ease-in-out infinite}
-   @keyframes cwnMove{0%{transform:translate(-64px,-2px) rotate(-16deg);opacity:0}5%{opacity:1}16%{transform:translate(-58px,-2px) rotate(-16deg);opacity:1}30%{transform:translate(-8px,0) rotate(6deg)}38%{transform:translate(5px,-2px) rotate(-3deg)}46%,80%{transform:translate(0,0) rotate(0deg);opacity:1}88%{transform:translate(34px,-30px) rotate(20deg);opacity:1}95%,100%{transform:translate(64px,-40px) rotate(28deg);opacity:0}}
-   .cwn-bat{transform-box:fill-box;transform-origin:0 50%;animation:cwnBat 9s infinite}
-   @keyframes cwnBat{0%,48%{transform:scaleX(.15)}60%{transform:scaleX(.45)}74%{transform:scaleX(.8)}82%,100%{transform:scaleX(1)}}
+   .cwn-l3{animation:cwnL3 9s infinite}
+   @keyframes cwnL1{0%,6%{opacity:0}10%,28%{opacity:1}34%,100%{opacity:0}}
+   @keyframes cwnL2{0%,30%{opacity:0}34%,52%{opacity:1}58%,100%{opacity:0}}
+   @keyframes cwnL3{0%,60%{opacity:0}64%,82%{opacity:1}88%,100%{opacity:0}}
+   .cwn-ad{animation:cwnAd 9s ease-in-out infinite}
+   @keyframes cwnAd{0%{transform:translate(-70px,0);opacity:0}6%{opacity:1}18%,88%{transform:translate(0,0);opacity:1}96%,100%{transform:translate(70px,0);opacity:0}}
+   .cwn-plug{animation:cwnPlug 9s ease-in-out infinite}
+   @keyframes cwnPlug{0%,50%{transform:translate(60px,-40px);opacity:0}54%{opacity:1}62%,80%{transform:translate(0,0);opacity:1}86%{transform:translate(20px,-30px);opacity:1}92%,100%{transform:translate(60px,-40px);opacity:0}}
    .cwn-glow{opacity:0;animation:cwnGlow 9s infinite}
-   @keyframes cwnGlow{0%,46%{opacity:0}52%,82%{opacity:.7}88%,100%{opacity:0}}
+   @keyframes cwnGlow{0%,30%{opacity:0}34%,54%{opacity:.7}60%,100%{opacity:0}}
    .cwn-charge{opacity:0;animation:cwnOn 9s infinite}
-   @keyframes cwnOn{0%,50%{opacity:0}52%,82%{opacity:1}88%,100%{opacity:0}}
+   @keyframes cwnOn{0%,32%{opacity:0}36%,54%{opacity:1}60%,100%{opacity:0}}
    .cwn-ring{fill:none;stroke:#2f7bff;stroke-width:1;transform-box:fill-box;transform-origin:center;animation:cwnRing 1.6s linear infinite}
    @keyframes cwnRing{0%{transform:scale(.4);opacity:.9}100%{transform:scale(2.4);opacity:0}}
-   .cwn-flow{fill:none;stroke:#2f7bff;stroke-width:1.4;stroke-dasharray:3 5;animation:cwnFlow .8s linear infinite}
-   @keyframes cwnFlow{to{stroke-dashoffset:-16}}
-   .cwn-outled{animation:cwnOutLed 2s infinite}
-   @keyframes cwnOutLed{0%,100%{opacity:.3}50%{opacity:1}}
+   .cwn-led{animation:cwnLed 9s infinite}
+   @keyframes cwnLed{0%,62%{opacity:0}64%,84%{opacity:1}88%,100%{opacity:0}}
+   .cwn-led2{animation:cwnLed2 1.6s ease-in-out infinite}
+   @keyframes cwnLed2{0%,100%{opacity:.4}50%{opacity:1}}
   </style>
 
-  <text class="cwn-tx" x="179" y="16">AC 220V</text>
-  <path d="M179 56C179 72 170 80 160 84" fill="none" stroke="#566077" stroke-width="1.4"/>
-  <g class="cwn-charge"><path class="cwn-flow" d="M179 56C179 72 170 80 160 84"/></g>
-
-  <rect x="166" y="22" width="26" height="34" rx="6" fill="#080c14" stroke="#566077" stroke-width="1.2"/>
-  <rect x="172" y="32" width="3" height="9" rx="1" fill="#566077"/>
-  <rect x="183" y="32" width="3" height="9" rx="1" fill="#566077"/>
-  <circle class="cwn-outled" cx="179" cy="48" r="1.6" fill="#2f7bff"/>
-
-  <rect x="40" y="82" width="120" height="8" rx="4" fill="#0d1a33" stroke="#2f7bff" stroke-width="1.2"/>
-  <rect class="cwn-glow" x="40" y="82" width="120" height="8" rx="4" fill="#2f7bff"/>
-  <circle class="cwn-glow" cx="150" cy="86" r="1.6" fill="#9db8ff"/>
-
+  <!-- 충전 패드 -->
+  <rect x="40" y="84" width="120" height="8" rx="4" fill="#0d1a33" stroke="#2f7bff" stroke-width="1.2"/>
+  <rect class="cwn-glow" x="40" y="84" width="120" height="8" rx="4" fill="#2f7bff"/>
   <g class="cwn-charge">
-   <circle class="cwn-ring" cx="100" cy="84" r="6"/>
-   <circle class="cwn-ring" cx="100" cy="84" r="6" style="animation-delay:.8s"/>
+   <circle class="cwn-ring" cx="100" cy="88" r="6"/>
+   <circle class="cwn-ring" cx="100" cy="88" r="6" style="animation-delay:.8s"/>
   </g>
 
-  <text class="cwn-lbl cwn-l1" x="100" y="14">ALIGNING</text>
-  <text class="cwn-lbl cwn-l2" x="100" y="14">CHARGING</text>
-
-  <g class="cwn-phone"><g transform="translate(100 50)">
-   <rect x="-18" y="-28" width="36" height="56" rx="7" fill="#080c14" stroke="#9db8ff" stroke-width="1.5"/>
-   <rect x="-14" y="-22" width="28" height="44" rx="3" fill="#0d1a33"/>
-   <circle cx="0" cy="-16" r="1.2" fill="#2a3550"/>
-   <rect x="-10" y="-3" width="20" height="6" rx="2" fill="none" stroke="#2a3550" stroke-width="1"/>
-   <rect class="cwn-bat" x="-9" y="-2" width="18" height="4" rx="1.5" fill="#2f7bff"/>
+  <!-- 어댑터 (패드 위) -->
+  <g class="cwn-ad"><g transform="translate(100 0)">
+   <rect x="-28" y="50" width="56" height="32" rx="7" fill="#080c14" stroke="#9db8ff" stroke-width="1.5"/>
+   <rect x="-24" y="54" width="48" height="24" rx="5" fill="#0d1a33"/>
+   <!-- 콘센트 구멍 -->
+   <rect x="-16" y="60" width="3" height="9" rx="1" fill="#2a3550"/>
+   <rect x="13" y="60" width="3" height="9" rx="1" fill="#2a3550"/>
+   <circle cx="0" cy="66" r="1.6" fill="#2a3550"/>
+   <!-- 상태 LED -->
+   <circle class="cwn-led2" cx="0" cy="74" r="1.4" fill="#2f7bff"/>
   </g></g>
 
+  <!-- 플러그 (위에서 내려와 꽂힘) -->
+  <g transform="translate(100 0)"><g class="cwn-plug">
+   <rect x="-17" y="38" width="34" height="14" rx="4" fill="#080c14" stroke="#9db8ff" stroke-width="1.5"/>
+   <rect x="-15.5" y="52" width="2" height="7" rx="1" fill="#9db8ff"/>
+   <rect x="13.5" y="52" width="2" height="7" rx="1" fill="#9db8ff"/>
+  </g></g>
+
+  <!-- 충전 중 파동 -->
   <g class="cwn-charge">
    <circle r="1.4" fill="#9db8ff">
-    <animateMotion dur="1.2s" repeatCount="indefinite" path="M100 84V56"/>
+    <animateMotion dur="1.2s" repeatCount="indefinite" path="M100 82V60"/>
     <animate attributeName="opacity" values="0;1;1;0" dur="1.2s" repeatCount="indefinite"/>
    </circle>
    <circle r="1.4" fill="#9db8ff">
-    <animateMotion dur="1.2s" begin="-0.6s" repeatCount="indefinite" path="M94 84V56"/>
+    <animateMotion dur="1.2s" begin="-0.6s" repeatCount="indefinite" path="M94 82V60"/>
     <animate attributeName="opacity" values="0;1;1;0" dur="1.2s" begin="-0.6s" repeatCount="indefinite"/>
    </circle>
-   <circle r="1.4" fill="#9db8ff">
-    <animateMotion dur="1.2s" begin="-0.3s" repeatCount="indefinite" path="M106 84V56"/>
-    <animate attributeName="opacity" values="0;1;1;0" dur="1.2s" begin="-0.3s" repeatCount="indefinite"/>
-   </circle>
   </g>
+
+  <!-- 라벨 -->
+  <text class="cwn-lbl cwn-l1" x="100" y="14">ALIGNING</text>
+  <text class="cwn-lbl cwn-l2" x="100" y="14">CHARGING</text>
+  <text class="cwn-lbl cwn-l3" x="100" y="14">PLUG IN &amp; USE</text>
  </svg>`,
 
  /* 3 Swarm drone: canvas animation (filled in by drone()) */
