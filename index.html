@@ -7,6 +7,7 @@
 3. 답변은 요청된 구역의 전체 코드만 드립니다. 파일 전체를 다시 출력하지 않습니다.
 4. 여러 구역을 고칠 때는 구역별로 나눠서, 각각 "어디를 교체하는지" 표기합니다.
 5. 새 구역이 필요하면 기존 ID 체계를 따라 새 ID를 만들고, 위 목록 주석을 함께 갱신합니다.
+[변경 이력] 배경음악 플레이어 삭제 (CSS-D, HTML-B, JS-G 제거)
 =====================================================================
 -->
 <html lang="en">
@@ -182,40 +183,7 @@ a:focus-visible,button:focus-visible,.cf:focus-visible{outline:2px solid var(--b
 .tv{font-family:var(--body);font-size:8px;font-weight:600;fill:#9db8ff}
 /* [END SEC CSS-C] */
 
-/* [SEC CSS-D] 배경음악 플레이어 스타일 (우상단 고정, 시크바·음량 포함) */
-.bgm{position:fixed;top:72px;right:clamp(20px,5vw,56px);z-index:70;width:min(340px,calc(100% - 40px));background:var(--card);border:1px solid var(--line);border-radius:18px;padding:10px 12px;box-shadow:0 10px 40px -14px rgba(47,123,255,.35)}
-.bgm-row{display:flex;align-items:center;gap:10px}
-.bgm-ctl{display:flex;align-items:center;gap:6px;flex:none}
-.bgm-btn{width:34px;height:34px;flex:none;border-radius:50%;border:1px solid var(--line);background:var(--blue-soft);color:var(--ink);cursor:pointer;font-size:.8rem;display:grid;place-items:center;transition:border-color .2s}
-.bgm-btn.sm{width:28px;height:28px;background:none;font-size:.7rem;color:var(--mute)}
-.bgm-btn:hover{border-color:var(--blue)}
-.bgm-btn:disabled{opacity:.4;cursor:default}
-.bgm-btn.on{border-color:var(--blue);color:var(--blue)}
-.bgm-info{flex:1;min-width:0}
-.bgm-title{font-size:.84rem;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.bgm-sub{font-size:.7rem;color:#566077;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.bgm-body{display:none;margin-top:10px;border-top:1px solid var(--line);padding-top:10px}
-.bgm.open .bgm-body{display:block}
-.bgm-form{display:flex;gap:6px}
-.bgm-form input{flex:1;min-width:0;background:none;border:1px solid var(--line);border-radius:99px;color:var(--ink);font:inherit;font-size:.8rem;padding:5px 12px;outline:none}
-.bgm-form input:focus{border-color:var(--blue)}
-.bgm-form input::placeholder{color:#566077}
-.bgm-form button{background:none;border:1px solid var(--line);color:var(--mute);border-radius:99px;padding:3px 12px;font:inherit;font-size:.78rem;cursor:pointer}
-.bgm-form button:hover{color:var(--blue);border-color:var(--blue)}
-.bgm-items{list-style:none;margin-top:10px;max-height:220px;overflow:auto}
-.bgm-items li{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:10px;font-size:.82rem;color:var(--mute);cursor:pointer}
-.bgm-items li:hover{background:rgba(255,255,255,.04)}
-.bgm-items li.on{color:var(--ink);background:var(--blue-soft)}
-.bgm-items li .nm{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.bgm-items li .del{background:none;border:0;color:#566077;cursor:pointer;font-size:.9rem;padding:0 4px}
-.bgm-items li .del:hover{color:#ff6b6b}
-.bgm-empty{font-size:.8rem;color:#566077;padding:8px}
-@media(max-width:600px){.bgm{top:64px;right:20px}}
-.bgm-prog{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:.7rem;color:#566077}
-.bgm-prog span{flex:none;font-variant-numeric:tabular-nums}
-.bgm-prog input[type=range]{flex:1;min-width:0;height:4px;accent-color:#2f7bff;cursor:pointer}
-.bgm-prog #bgmVol{flex:none;width:56px}
-.bgm-prog #bgmMute{flex:none;background:none;border:0;color:var(--mute);cursor:pointer;font-size:.8rem;padding:0 2px}
+/* [SEC CSS-D] 배경음악 플레이어 스타일 - 삭제됨 */
 /* [END SEC CSS-D] */
 </style>
 </head>
@@ -267,36 +235,7 @@ a:focus-visible,button:focus-visible,.cf:focus-visible{outline:2px solid var(--b
 <footer><span>© 2026 MO JUNHYUN</span><a href="https://mo-bi.tistory.com/" target="_blank" rel="noopener">mo-bi.tistory.com</a></footer>
 <!-- [END SEC HTML-A] -->
 
-<!-- [SEC HTML-B] 배경음악 플레이어 마크업 -->
-<div class="bgm" id="bgm">
-  <div class="bgm-row">
-    <div class="bgm-ctl">
-      <button class="bgm-btn sm" id="bgmPrev" aria-label="이전 곡">⏮</button>
-      <button class="bgm-btn" id="bgmPlay" disabled aria-label="재생 또는 일시정지">▶</button>
-      <button class="bgm-btn sm" id="bgmNext" aria-label="다음 곡">⏭</button>
-    </div>
-    <div class="bgm-info">
-      <div class="bgm-title" id="bgmTitle">로딩 중…</div>
-      <div class="bgm-sub" id="bgmSub">BGM</div>
-    </div>
-    <button class="bgm-btn sm" id="bgmListBtn" aria-label="재생 목록 열기">☰</button>
-  </div>
-  <div class="bgm-prog">
-    <span id="bgmCur">0:00</span>
-    <input type="range" id="bgmSeek" min="0" max="1000" value="0" aria-label="재생 위치">
-    <span id="bgmDur">0:00</span>
-    <button id="bgmMute" aria-label="음소거">🔊</button>
-    <input type="range" id="bgmVol" min="0" max="100" value="30" aria-label="음량">
-  </div>
-  <div class="bgm-body">
-    <form class="bgm-form" id="bgmForm">
-      <input id="bgmUrl" type="url" placeholder="유튜브 링크 추가" aria-label="유튜브 링크">
-      <button type="submit">추가</button>
-    </form>
-    <ul class="bgm-items" id="bgmItems"></ul>
-  </div>
-</div>
-<div id="bgmHost" style="position:fixed;width:1px;height:1px;left:-10px;top:-10px;opacity:0;pointer-events:none"></div>
+<!-- [SEC HTML-B] 배경음악 플레이어 마크업 - 삭제됨 -->
 <!-- [END SEC HTML-B] -->
 
 <!-- [SEC HTML-C] 검색 팔레트(Ctrl/Cmd+K), 프로젝트 상세 패널 오버레이 -->
@@ -882,185 +821,7 @@ renderProjList();
 showPr(0);
 /* [END SEC JS-F] */
 
-/* [SEC JS-G] 배경음악 플레이어 (YouTube, 재생 버튼으로만 시작, 시크바·음량 포함) */
-const BGM_START=[{id:'CJEgDVcFy80',title:''}];   /* 기본 곡 (자동재생 없음, 재생 버튼을 눌러야 시작) */
-const bgmList=[...BGM_START];
-let bgmIdx=0, ytPlayer=null, ytReady=false, bgmPlaying=false, loadedId=null;
-let bgmVolume=30, bgmMuted=false, bgmSeeking=false, pendingPlay=false;
-
-const $b=id=>document.getElementById(id);
-const bgmPlayBtn=$b('bgmPlay'), bgmPrevBtn=$b('bgmPrev'), bgmNextBtn=$b('bgmNext'), bgmListBtn=$b('bgmListBtn');
-const bgmBox=$b('bgm'), bgmTitle=$b('bgmTitle'), bgmSub=$b('bgmSub'), bgmForm=$b('bgmForm'), bgmUrl=$b('bgmUrl'), bgmItems=$b('bgmItems');
-const bgmSeek=$b('bgmSeek'), bgmCur=$b('bgmCur'), bgmDur=$b('bgmDur'), bgmMute=$b('bgmMute'), bgmVol=$b('bgmVol');
-
-function ytId(s){
-  const m=s.match(/(?:youtu\.be\/|v=|\/embed\/|\/shorts\/)([\w-]{11})/);
-  return m?m[1]:null;
-}
-function loadYT(cb){
-  if(window.YT&&YT.Player)return cb();
-  if(!document.getElementById('ytapi')){
-    const s=document.createElement('script');
-    s.id='ytapi';
-    s.src='https://www.youtube.com/iframe_api';
-    document.head.appendChild(s);
-  }
-  const prev=window.onYouTubeIframeAPIReady;
-  window.onYouTubeIframeAPIReady=()=>{if(prev)prev();cb();};
-}
-const fmt=s=>{s=Math.floor(s||0);return Math.floor(s/60)+':'+String(s%60).padStart(2,'0');};
-const curId=()=>bgmList[bgmIdx]&&bgmList[bgmIdx].id;
-
-function setVolIcon(){
-  bgmMute.textContent=(bgmMuted||bgmVolume===0)?'🔇':bgmVolume<50?'🔉':'🔊';
-}
-
-function renderBgm(){
-  const cur=bgmList[bgmIdx];
-  bgmTitle.textContent=cur?(cur.title||'제목 불러오는 중…'):'재생 목록이 비었어요';
-  bgmSub.textContent=bgmList.length?`${bgmIdx+1} / ${bgmList.length}`:'링크를 추가해 주세요';
-  bgmPlayBtn.disabled=!bgmList.length;
-  bgmPrevBtn.disabled=bgmNextBtn.disabled=bgmList.length<2;
-  bgmItems.innerHTML=bgmList.length?bgmList.map((tr,i)=>
-    `<li data-i="${i}" class="${i===bgmIdx?'on':''}"><span class="nm">${i===bgmIdx&&bgmPlaying?'♪ ':''}${tr.title||tr.id}</span><button class="del" data-d="${i}" aria-label="삭제">✕</button></li>`).join('')
-    :'<li class="bgm-empty">아직 추가된 곡이 없어요</li>';
-}
-
-/* 곡 전환: play가 true면 바로 재생, false면 준비만 하고 재생 버튼을 기다림 */
-function goTo(i,play){
-  if(!bgmList.length)return;
-  bgmIdx=(i+bgmList.length)%bgmList.length;
-  bgmCur.textContent='0:00';bgmDur.textContent='0:00';bgmSeek.value=0;
-  renderBgm();
-  if(!ytPlayer){
-    pendingPlay=play;
-    loadYT(()=>{if(!ytPlayer)createPlayer(curId());});
-    return;
-  }
-  if(!ytReady){pendingPlay=play;return;}
-  loadedId=curId();
-  play?ytPlayer.loadVideoById(loadedId):ytPlayer.cueVideoById(loadedId);
-}
-
-function createPlayer(id){
-  loadedId=id;
-  ytPlayer=new YT.Player('bgmHost',{
-    height:'1',
-    width:'1',
-    videoId:id,
-    playerVars:{autoplay:0,controls:0,playsinline:1},
-    events:{
-      onReady:e=>{
-        ytReady=true;
-        e.target.setVolume(bgmVolume);
-        bgmMuted?e.target.mute():e.target.unMute();
-        if(curId()!==loadedId){loadedId=curId();e.target.cueVideoById(loadedId);}
-        if(pendingPlay){pendingPlay=false;e.target.playVideo();}
-        setVolIcon();
-      },
-      onStateChange:e=>{
-        const S=YT.PlayerState;
-        bgmPlaying=e.data===S.PLAYING;
-        bgmPlayBtn.textContent=bgmPlaying?'❚❚':'▶';
-        bgmPlayBtn.classList.toggle('on',bgmPlaying);
-        if(e.data===S.ENDED)goTo(bgmIdx+1,true);
-        const d=e.target.getVideoData&&e.target.getVideoData();
-        const cur=bgmList[bgmIdx];
-        if(d&&d.title&&cur&&d.video_id===cur.id&&cur.title!==d.title)cur.title=d.title;
-        renderBgm();
-      },
-      onError:()=>{
-        bgmSub.textContent='재생할 수 없는 영상이에요 · 다음 곡으로';
-        setTimeout(()=>{if(bgmList.length>1)goTo(bgmIdx+1,bgmPlaying);},1200);
-      }
-    }
-  });
-}
-
-/* 재생 버튼: 처음이면 재생 시작, 이후에는 재생/일시정지 토글 */
-bgmPlayBtn.addEventListener('click',()=>{
-  if(!ytPlayer||!ytReady){goTo(bgmIdx,true);return;}
-  if(bgmPlaying){ytPlayer.pauseVideo();return;}
-  if(loadedId!==curId()){loadedId=curId();ytPlayer.loadVideoById(loadedId);}
-  else ytPlayer.playVideo();
-});
-bgmPrevBtn.addEventListener('click',()=>goTo(bgmIdx-1,bgmPlaying));
-bgmNextBtn.addEventListener('click',()=>goTo(bgmIdx+1,bgmPlaying));
-bgmListBtn.addEventListener('click',()=>bgmBox.classList.toggle('open'));
-
-/* 시크바 */
-setInterval(()=>{
-  if(!ytPlayer||!ytReady||!ytPlayer.getDuration)return;
-  const dur=ytPlayer.getDuration()||0,cur=ytPlayer.getCurrentTime()||0;
-  bgmDur.textContent=fmt(dur);
-  if(!bgmSeeking){bgmCur.textContent=fmt(cur);bgmSeek.value=dur?Math.round(cur/dur*1000):0;}
-},500);
-bgmSeek.addEventListener('input',()=>{
-  bgmSeeking=true;
-  const dur=ytReady?ytPlayer.getDuration():0;
-  bgmCur.textContent=fmt(dur*bgmSeek.value/1000);
-});
-bgmSeek.addEventListener('change',()=>{
-  if(ytReady){const dur=ytPlayer.getDuration()||0;ytPlayer.seekTo(dur*bgmSeek.value/1000,true);}
-  bgmSeeking=false;
-});
-
-/* 음량 / 음소거 */
-bgmVol.addEventListener('input',()=>{
-  bgmVolume=+bgmVol.value;
-  if(ytReady){
-    ytPlayer.setVolume(bgmVolume);
-    if(bgmVolume>0&&bgmMuted){bgmMuted=false;ytPlayer.unMute();}
-  }
-  setVolIcon();
-});
-bgmMute.addEventListener('click',()=>{
-  bgmMuted=!bgmMuted;
-  if(ytReady){bgmMuted?ytPlayer.mute():ytPlayer.unMute();}
-  setVolIcon();
-});
-
-/* 목록 추가 / 선택 / 삭제 */
-bgmForm.addEventListener('submit',e=>{
-  e.preventDefault();
-  const id=ytId(bgmUrl.value.trim());
-  if(!id){
-    bgmUrl.value='';
-    bgmUrl.placeholder='올바른 유튜브 링크가 아니에요';
-    return;
-  }
-  bgmList.push({id,title:''});
-  bgmUrl.value='';
-  bgmUrl.placeholder='유튜브 링크 추가';
-  goTo(bgmList.length-1,false);
-});
-bgmItems.addEventListener('click',e=>{
-  const del=e.target.closest('.del');
-  if(del){
-    const i=+del.dataset.d;
-    bgmList.splice(i,1);
-    if(!bgmList.length){
-      if(ytReady)ytPlayer.stopVideo();
-      bgmIdx=0;bgmPlaying=false;bgmPlayBtn.textContent='▶';
-      renderBgm();return;
-    }
-    if(i<bgmIdx)bgmIdx--;
-    else if(i===bgmIdx){
-      bgmIdx=Math.min(i,bgmList.length-1);
-      if(ytReady){loadedId=curId();ytPlayer.cueVideoById(loadedId);}
-    }
-    renderBgm();
-    return;
-  }
-  const li=e.target.closest('li[data-i]');
-  if(li)goTo(+li.dataset.i,bgmPlaying);
-});
-
-/* 초기화: 자동재생 없이 곡 정보만 미리 불러옴 */
-bgmVol.value=bgmVolume;
-setVolIcon();
-renderBgm();
-loadYT(()=>{if(!ytPlayer)createPlayer(curId());});
+/* [SEC JS-G] 배경음악 플레이어 - 삭제됨 */
 /* [END SEC JS-G] */
 
 /* ---------- 초기 렌더링 (구역 밖, 수정 시 주의) ---------- */
