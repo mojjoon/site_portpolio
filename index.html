@@ -43,7 +43,7 @@ h1{font-family:var(--display);font-size:clamp(3rem,15vw,13rem);line-height:.9;le
 h1 span.sp{width:.32em}
 h1 span{display:inline-block;transition:color .15s,transform .15s;will-change:transform}
 .sub{margin-top:28px;max-width:34rem;color:var(--mute);font-size:clamp(1rem,1.6vw,1.2rem);font-weight:300}
-.hint{position:absolute;bottom:28px;left:clamp(20px,5vw,56px);z-index:2;color:#4a5469;font-size:.85rem}
+.hint{position:absolute;bottom:88px;left:clamp(20px,5vw,56px);z-index:2;color:#4a5469;font-size:.85rem}
 .now{position:absolute;right:clamp(20px,5vw,56px);bottom:28px;z-index:2;max-width:50%;text-align:right;color:#4a5469;font-size:.85rem}
 .now a{color:var(--mute);text-decoration:none}.now a:hover{color:var(--blue)}
 section.s{padding:110px clamp(20px,5vw,56px);text-align:center}
@@ -163,6 +163,18 @@ a:focus-visible,button:focus-visible,.cf:focus-visible{outline:2px solid var(--b
 .tx{font-family:var(--body);font-size:5.5px;letter-spacing:.12em;fill:#566077}
 .tv{font-family:var(--body);font-size:8px;font-weight:600;fill:#9db8ff}
 
+/* ---------- 배경음악 플레이어 ---------- */
+.bgm{position:fixed;left:clamp(20px,5vw,56px);bottom:20px;z-index:70;display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:99px;padding:6px 8px 6px 6px}
+.bgm-btn{width:34px;height:34px;flex:none;border-radius:50%;border:1px solid var(--line);background:var(--blue-soft);color:var(--ink);cursor:pointer;font-size:.8rem;transition:border-color .2s}
+.bgm-btn:hover{border-color:var(--blue)}
+.bgm-btn:disabled{opacity:.4;cursor:default}
+.bgm-form{display:flex;align-items:center;gap:6px}
+.bgm-form input{width:200px;background:none;border:0;color:var(--ink);font:inherit;font-size:.82rem;outline:none}
+.bgm-form input::placeholder{color:#566077}
+.bgm-form button{background:none;border:1px solid var(--line);color:var(--mute);border-radius:99px;padding:3px 12px;font:inherit;font-size:.78rem;cursor:pointer}
+.bgm-form button:hover{color:var(--blue);border-color:var(--blue)}
+@media(max-width:600px){.bgm-form input{width:110px}}
+
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}html{scroll-behavior:auto}}
 </style>
 </head>
@@ -211,6 +223,16 @@ a:focus-visible,button:focus-visible,.cf:focus-visible{outline:2px solid var(--b
 </section>
 
 <footer><span>© 2026 MO JUNHYUN</span><a href="https://mo-bi.tistory.com/" target="_blank" rel="noopener">mo-bi.tistory.com</a></footer>
+
+<!-- 배경음악 플레이어 -->
+<div class="bgm" id="bgm">
+  <button class="bgm-btn" id="bgmBtn" disabled aria-label="재생 또는 일시정지">▶</button>
+  <form class="bgm-form" id="bgmForm">
+    <input id="bgmUrl" type="url" placeholder="유튜브 링크 붙여넣기" aria-label="유튜브 링크">
+    <button type="submit">적용</button>
+  </form>
+</div>
+<div id="bgmHost" style="position:fixed;width:1px;height:1px;left:-10px;top:-10px;opacity:0;pointer-events:none"></div>
 
 <div class="ov" id="pal"><div class="box p"><input aria-label="Search"><ul></ul></div></div>
 <div class="ov" id="dp"><div class="box"></div></div>
@@ -788,6 +810,74 @@ showPr(0);
 applyStatic();
 renderChips();
 renderPosts(true);
+
+/* ---------- 배경음악 (YouTube, 소리만 재생) ---------- */
+const bgmBtn=document.getElementById('bgmBtn');
+const bgmForm=document.getElementById('bgmForm');
+const bgmUrl=document.getElementById('bgmUrl');
+let ytPlayer=null;
+
+function ytId(s){
+  const m=s.match(/(?:youtu\.be\/|v=|\/embed\/|\/shorts\/)([\w-]{11})/);
+  return m?m[1]:null;
+}
+
+function loadYT(cb){
+  if(window.YT&&YT.Player)return cb();
+  if(!document.getElementById('ytapi')){
+    const s=document.createElement('script');
+    s.id='ytapi';
+    s.src='https://www.youtube.com/iframe_api';
+    document.head.appendChild(s);
+  }
+  const prev=window.onYouTubeIframeAPIReady;
+  window.onYouTubeIframeAPIReady=()=>{if(prev)prev();cb();};
+}
+
+function setBgm(id){
+  loadYT(()=>{
+    if(ytPlayer){
+      ytPlayer.loadVideoById(id);
+      return;
+    }
+    ytPlayer=new YT.Player('bgmHost',{
+      height:'1',
+      width:'1',
+      videoId:id,
+      playerVars:{playsinline:1},
+      events:{
+        onReady:e=>{e.target.setVolume(30);bgmBtn.disabled=false;},
+        onStateChange:e=>{
+          bgmBtn.textContent=e.data===YT.PlayerState.PLAYING?'❚❚':'▶';
+        },
+        onError:()=>{
+          bgmBtn.disabled=true;
+          bgmUrl.value='';
+          bgmUrl.placeholder='재생할 수 없는 영상이에요';
+        }
+      }
+    });
+  });
+}
+
+bgmForm.addEventListener('submit',e=>{
+  e.preventDefault();
+  const id=ytId(bgmUrl.value.trim());
+  if(!id){
+    bgmUrl.value='';
+    bgmUrl.placeholder='올바른 유튜브 링크가 아니에요';
+    return;
+  }
+  bgmUrl.value='';
+  bgmUrl.placeholder='유튜브 링크 붙여넣기';
+  setBgm(id);
+});
+
+bgmBtn.addEventListener('click',()=>{
+  if(!ytPlayer)return;
+  const playing=ytPlayer.getPlayerState()===YT.PlayerState.PLAYING;
+  playing?ytPlayer.pauseVideo():ytPlayer.playVideo();
+});
 </script>
 </body>
 </html>
