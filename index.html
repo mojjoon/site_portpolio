@@ -639,7 +639,7 @@ const VZ=[
   <text class="tx" x="8" y="10">WEEKLY KM</text>
   ${[18,30,24,40,34,52,44].map((h,i)=>`<rect class="bb" style="--i:${i}" x="${8+i*12}" y="${88-h}" width="8" height="${h}" rx="2" fill="${i===5?'#2f7bff':'#1b3a73'}"/>`).join('')}
   <text class="tx" x="100" y="10">PACE</text><text class="tv" x="192" y="10" text-anchor="end">5'12"/km</text>
-  <path d="M100 40Q114 34 121 35Q128 36 135 31Q142 26 149 28Q156 30 163 26Q170 22 177 25Q184 28 188 24Q190 22 192 20L192 88L100 88Z" fill="url(#rcPaceG)" stroke="none">
+  <path d="M100 40Q114 34 121 35Q128 36 135 31Q142 26 149 28Q156 30 163 26Q170 22 177 25Q184 28 188 24Q190 22 192 20L192 50L100 50Z" fill="url(#rcPaceG)" stroke="none">
    <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;.3;.8;1" dur="4s" repeatCount="indefinite"/>
   </path>
   <path class="rc-pace" pathLength="1" d="M100 40Q114 34 121 35Q128 36 135 31Q142 26 149 28Q156 30 163 26Q170 22 177 25Q184 28 188 24Q190 22 192 20" fill="none" stroke="#2f7bff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vector-effect:none"/>
