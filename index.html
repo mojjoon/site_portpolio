@@ -714,7 +714,9 @@ const VZ=[
    .cwn-ad{animation:cwnAd 9s ease-in-out infinite}
    @keyframes cwnAd{0%{transform:translate(-70px,0);opacity:0}6%{opacity:1}18%,88%{transform:translate(0,0);opacity:1}96%,100%{transform:translate(70px,0);opacity:0}}
    .cwn-plug{animation:cwnPlug 9s ease-in-out infinite}
-   @keyframes cwnPlug{0%,50%{transform:translate(60px,-40px);opacity:0}54%{opacity:1}62%,80%{transform:translate(0,0);opacity:1}86%{transform:translate(20px,-30px);opacity:1}92%,100%{transform:translate(60px,-40px);opacity:0}}
+   @keyframes cwnPlug{0%,50%{transform:translate(0,-40px);opacity:0}54%{opacity:1}62%,80%{transform:translate(0,0);opacity:1}86%{transform:translate(0,-30px);opacity:1}92%,100%{transform:translate(0,-40px);opacity:0}}
+   .cwn-hole{animation:cwnHole 9s linear infinite}
+   @keyframes cwnHole{0%,58%{opacity:1}62%,86%{opacity:0}90%,100%{opacity:1}}
    .cwn-glow{opacity:0;animation:cwnGlow 9s infinite}
    @keyframes cwnGlow{0%,30%{opacity:0}34%,54%{opacity:.7}60%,100%{opacity:0}}
    .cwn-charge{opacity:0;animation:cwnOn 9s infinite}
@@ -735,23 +737,25 @@ const VZ=[
    <circle class="cwn-ring" cx="100" cy="88" r="6" style="animation-delay:.8s"/>
   </g>
 
+  <!-- 플러그 (어댑터보다 먼저 그려서, 꽂힌 부분은 어댑터 면에 가려짐) -->
+  <g transform="translate(100 0)"><g class="cwn-plug">
+   <rect x="-17" y="34" width="34" height="16" rx="4" fill="#080c14" stroke="#9db8ff" stroke-width="1.5"/>
+   <rect x="-15.5" y="50" width="2.4" height="8" rx="1" fill="#9db8ff"/>
+   <rect x="13.1" y="50" width="2.4" height="8" rx="1" fill="#9db8ff"/>
+  </g></g>
+
   <!-- 어댑터 (패드 위) -->
   <g class="cwn-ad"><g transform="translate(100 0)">
    <rect x="-28" y="50" width="56" height="32" rx="7" fill="#080c14" stroke="#9db8ff" stroke-width="1.5"/>
    <rect x="-24" y="54" width="48" height="24" rx="5" fill="#0d1a33"/>
-   <!-- 콘센트 구멍 -->
-   <rect x="-16" y="60" width="3" height="9" rx="1" fill="#2a3550"/>
-   <rect x="13" y="60" width="3" height="9" rx="1" fill="#2a3550"/>
-   <circle cx="0" cy="66" r="1.6" fill="#2a3550"/>
+   <!-- 콘센트 구멍 (플러그가 꽂히는 순간 사라짐) -->
+   <g class="cwn-hole">
+    <rect x="-16" y="60" width="3" height="9" rx="1" fill="#2a3550"/>
+    <rect x="13" y="60" width="3" height="9" rx="1" fill="#2a3550"/>
+    <circle cx="0" cy="66" r="1.6" fill="#2a3550"/>
+   </g>
    <!-- 상태 LED -->
    <circle class="cwn-led2" cx="0" cy="74" r="1.4" fill="#2f7bff"/>
-  </g></g>
-
-  <!-- 플러그 (위에서 내려와 꽂힘) -->
-  <g transform="translate(100 0)"><g class="cwn-plug">
-   <rect x="-17" y="38" width="34" height="14" rx="4" fill="#080c14" stroke="#9db8ff" stroke-width="1.5"/>
-   <rect x="-15.5" y="52" width="2" height="7" rx="1" fill="#9db8ff"/>
-   <rect x="13.5" y="52" width="2" height="7" rx="1" fill="#9db8ff"/>
   </g></g>
 
   <!-- 충전 중 파동 -->
@@ -771,7 +775,7 @@ const VZ=[
   <text class="cwn-lbl cwn-l2" x="100" y="14">CHARGING</text>
   <text class="cwn-lbl cwn-l3" x="100" y="14">PLUG IN &amp; USE</text>
  </svg>`,
-
+  
  /* 3 Swarm drone: canvas animation (filled in by drone()) */
  '<canvas class="dr vz"></canvas>'];
 
