@@ -638,42 +638,49 @@ const VZ=[
   <path class="ln" pathLength="1" style="animation-duration:2.4s" d="M100 80H116l3-3 3 3H128l3-14 4 26 3-12H146l3-5 3 5H168l3-14 4 26 3-12H192"/>
  </svg>`,
 
- /* 1 Index & ETF DCA Signal: 출렁이는 가격선 + 저점마다 적립 매수 + 평균단가선 */
+ /* 1 Index & ETF DCA Signal: 가격선이 좌→우로 드러나고, 저점마다 BUY 표시 + 평균단가선 */
  `<svg class="vz" viewBox="0 0 200 100" preserveAspectRatio="xMidYMid meet">
   <style>
-   .ixn-line{fill:none;stroke:#2f7bff;stroke-width:2;stroke-linejoin:round;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:1;animation:ixnDraw 8s linear infinite}
-   @keyframes ixnDraw{0%{stroke-dashoffset:1;opacity:1}40%{stroke-dashoffset:0;opacity:1}90%{stroke-dashoffset:0;opacity:1}96%,100%{stroke-dashoffset:0;opacity:0}}
-   .ixn-area{opacity:0;animation:ixnFade 8s linear infinite}
-   @keyframes ixnFade{0%{opacity:0}40%{opacity:1}90%{opacity:1}96%,100%{opacity:0}}
-   .ixn-mk{opacity:0;transform-box:fill-box;transform-origin:center;animation:ixnPop 8s infinite}
-   @keyframes ixnPop{0%{opacity:0;transform:scale(0)}4%{opacity:1;transform:scale(1.4)}7%{transform:scale(1)}90%{opacity:1;transform:scale(1)}96%,100%{opacity:0;transform:scale(.6)}}
-   .ixn-avg{opacity:0;animation:ixnAvg 8s infinite}
-   @keyframes ixnAvg{0%{opacity:0}4%,90%{opacity:.9}96%,100%{opacity:0}}
-   .ixn-tx{font-family:var(--body);font-size:5.5px;letter-spacing:.12em;fill:#566077}
-   .ixn-buy{font-family:var(--body);font-size:5.5px;font-weight:600;fill:#9db8ff;text-anchor:middle}
+   .ixn2-g{animation:ixn2Fade 8s linear infinite}
+   @keyframes ixn2Fade{0%,90%{opacity:1}97%,100%{opacity:0}}
+   .ixn2-avg{opacity:0;animation:ixn2Avg 8s linear 2.4s infinite both}
+   @keyframes ixn2Avg{0%{opacity:0}4%,100%{opacity:.9}}
+   .ixn2-mk{opacity:0;transform-box:fill-box;transform-origin:center;animation:ixn2Pop 8s infinite both}
+   @keyframes ixn2Pop{0%{opacity:0;transform:scale(0)}4%{opacity:1;transform:scale(1.4)}7%{opacity:1;transform:scale(1)}90%{opacity:1;transform:scale(1)}96%,100%{opacity:0;transform:scale(.6)}}
+   .ixn2-tx{font-family:var(--body);font-size:5.5px;letter-spacing:.12em;fill:#566077}
+   .ixn2-buy{font-family:var(--body);font-size:5.5px;font-weight:600;fill:#9db8ff;text-anchor:middle}
   </style>
   <defs>
-   <linearGradient id="ixng" x1="0" y1="0" x2="0" y2="1">
+   <linearGradient id="ixn2g" x1="0" y1="0" x2="0" y2="1">
     <stop offset="0" stop-color="#2f7bff" stop-opacity=".25"/>
     <stop offset="1" stop-color="#2f7bff" stop-opacity="0"/>
    </linearGradient>
+   <clipPath id="ixn2c">
+    <rect x="0" y="0" width="0" height="100">
+     <animate attributeName="width" dur="8s" repeatCount="indefinite" calcMode="linear"
+      values="0;200;200;200" keyTimes="0;.4;.9;1"/>
+    </rect>
+   </clipPath>
   </defs>
-  <path d="M0 25H200M0 50H200M0 75H200" stroke="#121a2b" stroke-width="1" fill="none"/>
-  <path class="ixn-area" d="M0 62L12 50L22 60L34 40L46 54L58 68L70 56L82 76L94 64L106 84L118 66L130 46L142 60L154 38L166 52L178 32L190 44L200 26V100H0Z" fill="url(#ixng)"/>
-  <path class="ixn-avg" style="animation-delay:2.4s" d="M58 70H200" fill="none" stroke="#9db8ff" stroke-width="1.2" stroke-dasharray="3 3"/>
-  <text class="ixn-tx ixn-avg" style="animation-delay:2.4s" x="198" y="66" text-anchor="end">AVG COST</text>
-  <text class="ixn-tx" x="6" y="10">PRICE</text>
-  <path id="ixnp" class="ixn-line" pathLength="1" d="M0 62L12 50L22 60L34 40L46 54L58 68L70 56L82 76L94 64L106 84L118 66L130 46L142 60L154 38L166 52L178 32L190 44L200 26"/>
-  <g class="ixn-mk" style="animation-delay:.93s"><circle cx="58" cy="68" r="3.2" fill="#2f7bff" stroke="#000" stroke-width="1.2"/><text class="ixn-buy" x="58" y="82">BUY</text></g>
-  <g class="ixn-mk" style="animation-delay:1.31s"><circle cx="82" cy="76" r="3.2" fill="#2f7bff" stroke="#000" stroke-width="1.2"/><text class="ixn-buy" x="82" y="90">BUY</text></g>
-  <g class="ixn-mk" style="animation-delay:1.70s"><circle cx="106" cy="84" r="3.2" fill="#2f7bff" stroke="#000" stroke-width="1.2"/><text class="ixn-buy" x="106" y="97">BUY</text></g>
-  <g class="ixn-mk" style="animation-delay:2.27s"><circle cx="142" cy="60" r="3.2" fill="#2f7bff" stroke="#000" stroke-width="1.2"/><text class="ixn-buy" x="142" y="51">BUY</text></g>
-  <circle r="2.4" fill="#9db8ff">
-   <animateMotion dur="8s" repeatCount="indefinite" keyPoints="0;1;1" keyTimes="0;0.4;1" calcMode="linear"><mpath href="#ixnp"/></animateMotion>
-   <animate attributeName="opacity" dur="8s" repeatCount="indefinite" values="0;1;1;0;0" keyTimes="0;.02;.9;.96;1"/>
-  </circle>
- </svg>`,
 
+  <path d="M0 25H200M0 50H200M0 75H200" stroke="#121a2b" stroke-width="1" fill="none"/>
+  <text class="ixn2-tx" x="6" y="10">PRICE</text>
+
+  <g class="ixn2-g">
+   <g clip-path="url(#ixn2c)">
+    <path d="M0 62L12 50L22 60L34 40L46 54L58 68L70 56L82 76L94 64L106 84L118 66L130 46L142 60L154 38L166 52L178 32L190 44L200 26V100H0Z" fill="url(#ixn2g)"/>
+    <path d="M0 62L12 50L22 60L34 40L46 54L58 68L70 56L82 76L94 64L106 84L118 66L130 46L142 60L154 38L166 52L178 32L190 44L200 26" fill="none" stroke="#2f7bff" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+   </g>
+
+   <path class="ixn2-avg" d="M58 70H200" fill="none" stroke="#9db8ff" stroke-width="1.2" stroke-dasharray="3 3"/>
+   <text class="ixn2-tx ixn2-avg" x="198" y="66" text-anchor="end">AVG COST</text>
+
+   <g class="ixn2-mk" style="animation-delay:.93s"><circle cx="58" cy="68" r="3.2" fill="#2f7bff" stroke="#000" stroke-width="1.2"/><text class="ixn2-buy" x="58" y="82">BUY</text></g>
+   <g class="ixn2-mk" style="animation-delay:1.31s"><circle cx="82" cy="76" r="3.2" fill="#2f7bff" stroke="#000" stroke-width="1.2"/><text class="ixn2-buy" x="82" y="90">BUY</text></g>
+   <g class="ixn2-mk" style="animation-delay:1.70s"><circle cx="106" cy="84" r="3.2" fill="#2f7bff" stroke="#000" stroke-width="1.2"/><text class="ixn2-buy" x="106" y="97">BUY</text></g>
+   <g class="ixn2-mk" style="animation-delay:2.27s"><circle cx="142" cy="60" r="3.2" fill="#2f7bff" stroke="#000" stroke-width="1.2"/><text class="ixn2-buy" x="142" y="51">BUY</text></g>
+  </g>
+ </svg>`,
  /* 2 Wireless Charging Pad: 기기가 미끄러져 정렬 → 충전 → 들려서 이동 → 반복 */
  `<svg class="vz" viewBox="0 0 200 100" preserveAspectRatio="xMidYMid meet">
   <style>
